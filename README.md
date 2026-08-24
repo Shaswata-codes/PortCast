@@ -1,55 +1,27 @@
-# MERN Stack Project
+# 🚢 PortCast
 
-A full-stack application built with MongoDB, Express, React, and Node.js.
+### Intelligent Freight Forecasting & Vessel Chartering Platform
 
-## Folder Structure
+PortCast is an AI-powered platform designed to forecast freight rates and optimize vessel chartering and bulk cargo procurement for shipments to the East Coast of India.
 
-```
-SIH/
-├── client/
-│   ├── public/
-│   ├── src/
-│   │   ├── assets/
-│   │   ├── components/
-│   │   ├── context/
-│   │   ├── hooks/
-│   │   ├── pages/
-│   │   ├── services/
-│   │   ├── utils/
-│   │   ├── App.css
-│   │   ├── App.jsx
-│   │   ├── index.css
-│   │   └── main.jsx
-│   ├── .env.example
-│   ├── index.html
-│   ├── package.json
-│   └── vite.config.js
-├── server/
-│   ├── src/
-│   │   ├── config/
-│   │   ├── controllers/
-│   │   ├── middleware/
-│   │   ├── models/
-│   │   ├── routes/
-│   │   ├── utils/
-│   │   ├── app.js
-│   │   └── server.js
-│   ├── .env.example
-│   └── package.json
-├── .gitignore
-└── README.md
-```
+## Features
 
-## Getting Started
+* 📈 Freight rate forecasting
+* 🚢 Vessel type recommendation
+* ⏱️ Optimal market entry timing
+* 📦 Bulk cargo procurement insights
+* ⚓ Port constraint analysis
+* 💰 Cost and vessel utilization optimization
 
-### Backend Setup
-1. Navigate to the server folder: `cd server`
-2. Install dependencies: `npm install`
-3. Create `.env` based on `.env.example`
-4. Start backend server: `npm run dev`
+## Tech Stack
 
-### Frontend Setup
-1. Navigate to the client folder: `cd client`
-2. Install dependencies: `npm install`
-3. Create `.env` based on `.env.example`
-4. Start frontend dev server: `npm run dev`
+* React + JavaScript
+* REST API
+* Rest to be decided
+
+## SIH 2026
+
+**Problem Statement:** SIH26006
+**Domain:** Software | Transportation & Logistics
+
+> Predict Freight. Optimize Chartering. Move Cargo Smarter. 🚢
