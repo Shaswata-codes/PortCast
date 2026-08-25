@@ -1,0 +1,6 @@
+vessel_id,vessel_class,dwt_min,dwt_max,typical_dwt,laden_draft_min_m,laden_draft_max_m,typical_loa_m,beam_m,daily_hire_min_usd,daily_hire_max_usd,avg_daily_hire_usd,fuel_consumption_mt_day,speed_knots,cargo_capacity_min_mt,cargo_capacity_max_mt,has_gear,gear_note
+handysize,Handysize,25000,39999,32000,9.5,10.5,170,27,8000,14000,11000,25,13.5,22000,37000,Yes,Self-geared with 4x30MT cranes
+supramax,Supramax / Ultramax,40000,64999,58000,11,13,190,32,10000,18000,14000,32,14,38000,62000,Yes,Self-geared with 4x35MT cranes
+panamax,Panamax / Kamsarmax,65000,84999,75000,13.5,14.5,229,32.3,12000,22000,17000,36,14,60000,82000,No,Gearless — requires shore cranes
+capesize,Capesize,100000,200000,180000,16,18.5,290,45,15000,35000,22000,52,14.5,150000,180000,No,Gearless — requires large shore cranes
+minicape,Mini-Cape / Baby-Cape,85000,99999,95000,14.5,16,250,43,13000,25000,19000,43,14,82000,95000,No,Gearless — requires shore cranes

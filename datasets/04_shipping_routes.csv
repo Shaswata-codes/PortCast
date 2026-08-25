@@ -1,0 +1,21 @@
+route_id,origin_id,destination_id,origin_name,destination_name,nautical_miles,transit_days_laden,transit_days_ballast,typical_vessel_classes,commodity,base_freight_rate_usd_mt,fuel_cost_estimate_usd_mt,choke_points,sw_monsoon_premium_pct,ne_monsoon_premium_pct,cyclone_premium_pct
+R01,newcastle,paradip,"Newcastle, AU",Paradip,5850,18,16,capesize; panamax,"Thermal Coal, Coking Coal",12.5,4.8,Lombok Strait,25,5,35
+R02,newcastle,vizag,"Newcastle, AU",Vizag,5700,17,15,capesize; panamax,Coking Coal,12,4.6,Lombok Strait,22,4,30
+R03,haypoint,dhamra,"Hay Point, AU",Dhamra,5900,18,16,capesize,Coking Coal (Premium HCC),11.8,4.9,Lombok Strait,28,5,35
+R04,haypoint,gangavaram,"Hay Point, AU",Gangavaram,5600,17,15,capesize,Coking Coal,11.5,4.5,Lombok Strait,22,4,30
+R05,taboneo,paradip,"Taboneo, ID",Paradip,2800,9,8,supramax; panamax,Thermal Coal (Sub-Bit),8.5,2.8,Malacca Strait,30,6,40
+R06,taboneo,haldia,"Taboneo, ID",Haldia,2950,10,8,handysize; supramax,Thermal Coal,9.8,3,Malacca Strait,35,8,45
+R07,samarinda,krishnapatnam,"Samarinda, ID",Krishnapatnam,3100,10,9,supramax,Thermal Coal,9.2,3.1,Malacca Strait,20,3,25
+R08,maputo,paradip,"Maputo, MZ",Paradip,4200,14,12,panamax; supramax,Coking Coal,14.5,4.2,Mozambique Channel,22,5,28
+R09,maputo,vizag,"Maputo, MZ",Vizag,4050,13,11,panamax; supramax,Coking Coal,14,4,Mozambique Channel,20,4,25
+R10,richardsbay,paradip,"Richards Bay, ZA",Paradip,4800,15,13,capesize; panamax,Thermal Coal (High CV),13.8,4.5,Cape of Good Hope,25,5,30
+R11,richardsbay,ennore,"Richards Bay, ZA",Ennore,4600,14,12,panamax,Thermal Coal,13.5,4.3,Cape of Good Hope,18,4,22
+R12,hampton,vizag,"Hampton Roads, US",Vizag,9200,28,25,capesize; panamax,Coking Coal,22,8.5,Suez Canal; Cape of Good Hope (alt),15,3,20
+R13,hampton,paradip,"Hampton Roads, US",Paradip,9400,29,26,capesize,Coking Coal,22.5,8.8,Suez Canal; Cape of Good Hope (alt),15,3,20
+R14,vostochny,paradip,"Vostochny, RU",Paradip,4600,14,12,panamax; supramax,Coking Coal,15,4.5,Tsushima Strait,22,5,28
+R15,vostochny,vizag,"Vostochny, RU",Vizag,4500,14,12,panamax; supramax,Coking Coal,14.8,4.4,Tsushima Strait,20,4,25
+R16,murmansk,haldia,"Murmansk, RU",Haldia,11200,34,30,handysize,Thermal Coal,26,10.5,Suez Canal,30,8,40
+R17,gladstone,krishnapatnam,"Gladstone, AU",Krishnapatnam,5400,16,14,supramax; panamax,"Thermal Coal, Bauxite",12.8,4.4,Lombok Strait,20,3,25
+R18,newcastle,gangavaram,"Newcastle, AU",Gangavaram,5550,17,15,capesize,Coking Coal,11.8,4.5,Lombok Strait,22,4,30
+R19,taboneo,dhamra,"Taboneo, ID",Dhamra,2750,9,7,supramax; panamax,Thermal Coal,8.2,2.7,Malacca Strait,28,6,35
+R20,maputo,gangavaram,"Maputo, MZ",Gangavaram,3900,12,10,supramax; panamax,Coking Coal,13.5,3.8,Mozambique Channel,20,4,25

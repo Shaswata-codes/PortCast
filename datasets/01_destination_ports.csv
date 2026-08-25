@@ -1,0 +1,10 @@
+port_id,port_name,state,latitude,longitude,max_draft_m,max_loa_m,max_beam_m,tidal_range_m,night_navigation,dry_bulk_berths,avg_discharge_rate_mt_day,avg_waiting_days,lighterage_required,lighterage_cost_per_mt,annual_capacity_mtpa,commodities,handysize_feasible,supramax_feasible,panamax_feasible,capesize_feasible,port_dues_per_mt,pilotage_per_mt
+paradip,Paradip,Odisha,20.2644,86.6085,14.5,260,40,1.8,Yes,6,25000,2.5,No,0,130,Thermal Coal; Coking Coal; Iron Ore; Limestone,Yes,Yes,Yes,Yes,0.45,0.3
+vizag,Visakhapatnam (Vizag),Andhra Pradesh,17.6868,83.2185,18.1,330,48,1.5,Yes,8,30000,2,No,0,75,Coking Coal; Iron Ore; Bauxite; Fertilizer; Manganese Ore,Yes,Yes,Yes,Yes,0.5,0.35
+haldia,Haldia (Kolkata),West Bengal,22.0256,88.0583,8.5,185,26,4.5,No/Restricted,3,12000,4.5,Yes,5.25,40,Thermal Coal; Fertilizer; Clinker; Steel,Yes,No,No,No,0.55,0.4
+dhamra,Dhamra,Odisha,20.7833,86.95,18,300,50,3.5,Yes,4,35000,1.5,No,0,100,Thermal Coal; Coking Coal,Yes,Yes,Yes,Yes,0.42,0.28
+krishnapatnam,Krishnapatnam,Andhra Pradesh,14.25,80.1167,18.5,300,50,1.2,Yes,5,28000,1.8,No,0,64,Thermal Coal; Iron Ore; Limestone; Gypsum,Yes,Yes,Yes,Yes,0.4,0.25
+ennore,Kamarajar (Ennore),Tamil Nadu,13.22,80.32,16,255,43,0.8,Yes,3,22000,3,No,0,46,Thermal Coal,Yes,Yes,Yes,No,0.48,0.32
+gangavaram,Gangavaram,Andhra Pradesh,17.62,83.24,21,330,52,1.5,Yes,4,40000,1.2,No,0,64,Coking Coal; Limestone; Bauxite; Iron Ore,Yes,Yes,Yes,Yes,0.38,0.22
+gopalpur,Gopalpur,Odisha,19.26,84.91,14,230,38,1.5,No/Restricted,2,15000,3.5,No,0,20,Thermal Coal; Bauxite; Iron Ore,Yes,Yes,No,No,0.5,0.35
+chennai,Chennai,Tamil Nadu,13.0827,80.2707,12.8,215,36,0.9,Yes,3,18000,3,No,0,30,Thermal Coal; Fertilizer; Iron Ore,Yes,Yes,No,No,0.52,0.38

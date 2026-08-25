@@ -1,0 +1,11 @@
+port_id,port_name,country,region,latitude,longitude,max_draft_m,loading_rate_mt_day,primary_commodity,typical_parcel_min_mt,typical_parcel_max_mt,avg_loading_days
+newcastle,Newcastle,Australia,East Coast AU,-32.9283,151.7817,16.5,45000,"Thermal Coal, Coking Coal",70000,180000,3
+haypoint,Hay Point / Dalrymple Bay,Australia,Queensland,-21.2833,149.2833,18.5,55000,Coking Coal (Premium HCC),80000,180000,2.5
+gladstone,Gladstone,Australia,Queensland,-23.8489,151.2872,15,40000,"Thermal Coal, Bauxite",55000,80000,3.5
+taboneo,Kalimantan (Taboneo),Indonesia,South Kalimantan,-3.51,114.76,14,20000,Thermal Coal (Sub-Bituminous),50000,75000,5
+samarinda,Samarinda,Indonesia,East Kalimantan,-0.5022,117.1536,11,15000,Thermal Coal (Low CV),30000,55000,6
+maputo,Maputo / Nacala,Mozambique,SE Africa,-25.9653,32.5892,14.5,25000,Coking Coal,50000,80000,5
+richardsbay,Richards Bay,South Africa,KwaZulu-Natal,-28.78,32.08,17.5,50000,Thermal Coal (High CV),70000,150000,2.5
+hampton,Hampton Roads (Norfolk),USA,US East Coast,36.8468,-76.2951,15.5,35000,"Coking Coal, Thermal Coal",70000,80000,4
+vostochny,Vostochny / Vanino,Russia,Russian Far East,42.75,133.0833,15,30000,"Coking Coal, Thermal Coal",55000,75000,5
+murmansk,Murmansk,Russia,Arctic Russia,68.9585,33.0827,15.5,28000,Thermal Coal,60000,80000,4.5

@@ -1,4 +1,4 @@
-# 🚢 PortCast
+# PortCast
 
 ### Intelligent Freight Forecasting & Vessel Chartering Platform
 

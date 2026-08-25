@@ -1,0 +1,8 @@
+factor,months_affected,freight_rate_impact,port_operations_impact,transit_time_impact
+SW Monsoon (Bay of Bengal),June - September,+20% to +35% rate premium,Discharge rate drops 15-25%; Port closures 2-5 days/month,+1.5 to +3.0 extra transit days
+NE Monsoon (Tamil Nadu coast),October - December,+5% to +10%,Minor disruption at Chennai and Ennore,+0.5 to +1.0 days
+Cyclone Season (Bay of Bengal),May-June and Oct-Nov,+15% to +40% (spike),Full port shutdown 3-7 days per event,+3 to +7 days (rerouting)
+Chinese New Year,Late Jan - Mid Feb,-10% to -15% (demand dip),Minimal,None
+Indian Pre-Monsoon Stock Build,April - May,+10% to +15% (pre-monsoon rush),Congestion spikes at Paradip and Dhamra,+1 day avg waiting
+Suez Canal Disruption,Unpredictable,+$3-$8/MT for US/Europe routes,N/A,+7 to +15 days (Cape rerouting)
+Malacca Strait Congestion,Year-round (variable),+$0.50-$1.50/MT,N/A,+0.5 to +1.5 days

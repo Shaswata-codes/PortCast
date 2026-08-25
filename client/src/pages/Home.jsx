@@ -17,7 +17,7 @@ const Home = () => {
 
   return (
     <div className="hero-card">
-      <h1 className="hero-title">MERN Stack Template</h1>
+      <h1 className="hero-title">PortCast</h1>
       <p className="hero-subtitle">
         A production-ready full-stack boilerplate with MongoDB, Express, React, and Node.js.
       </p>

@@ -1,0 +1,10 @@
+port_id,port_name,max_draft_m,handysize_25_40k,supramax_40_65k,panamax_65_85k,capesize_100_200k,notes
+paradip,Paradip,14.5,Feasible,Feasible,Feasible,Feasible,Up to 150k DWT
+vizag,Visakhapatnam (Vizag),18.1,Feasible,Feasible,Feasible,Feasible,Handles all sizes
+haldia,Haldia (Kolkata),8.5,Feasible,Not Feasible,Not Feasible,Not Feasible,Not feasible — max 8.5m draft
+dhamra,Dhamra,18,Feasible,Feasible,Feasible,Feasible,Purpose-built deep water port
+krishnapatnam,Krishnapatnam,18.5,Feasible,Feasible,Feasible,Feasible,Deep draft private port
+ennore,Kamarajar (Ennore),16,Feasible,Feasible,Feasible,Not Feasible,16m draft limits large Capesizes
+gangavaram,Gangavaram,21,Feasible,Feasible,Feasible,Feasible,Deepest port on East Coast (21m)
+gopalpur,Gopalpur,14,Feasible,Feasible,Not Feasible,Not Feasible,14m draft — no large Panamax
+chennai,Chennai,12.8,Feasible,Feasible,Not Feasible,Not Feasible,12.8m draft — primarily container port
