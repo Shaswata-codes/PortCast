@@ -16,7 +16,7 @@ export default function CharterOptimizer({ routes, onOptimize, optimizeResult })
   return (
     <div className="fade-in">
       <div className="section-header">
-        <h2>🎯 Intelligent Chartering Optimizer</h2>
+        <h2>Intelligent Chartering Optimizer</h2>
         <p>Vessel selection, voyage cost breakdown, idle risk, and optimal market entry — all in one view</p>
       </div>
 
@@ -41,7 +41,7 @@ export default function CharterOptimizer({ routes, onOptimize, optimizeResult })
             <input className="form-input" type="number" value={bunkerPrice} onChange={e => setBunkerPrice(parseInt(e.target.value) || 0)} min={300} max={1200} step={10} />
           </div>
           <button className="btn btn-primary" onClick={handleOptimize} disabled={!selectedRoute}>
-            ⚡ Optimize
+            Run Optimization
           </button>
         </div>
       </div>
@@ -73,21 +73,21 @@ export default function CharterOptimizer({ routes, onOptimize, optimizeResult })
 
           {/* Vessel Evaluation Cards */}
           <div style={{ marginTop: '1.25rem' }}>
-            <h3 style={{ fontSize: '1rem', fontWeight: 700, marginBottom: '0.75rem' }}>🚢 Vessel Class Evaluation</h3>
+            <h3 style={{ fontSize: '1rem', fontWeight: 700, marginBottom: '0.75rem' }}>Vessel Class Feasibility & Cost Evaluation</h3>
             {opt.recommendations.map(v => (
               <div key={v.vesselId} className={`vessel-result ${v.isOptimal ? 'optimal' : ''} ${!v.feasible ? 'infeasible' : ''}`}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '1rem' }}>
                   <div>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.3rem' }}>
                       <span style={{ fontSize: '1.1rem', fontWeight: 700, color: v.color }}>{v.vesselClass}</span>
-                      {!v.feasible && <span className="constraint-tag infeasible">❌ INFEASIBLE</span>}
-                      {v.feasible && <span className="constraint-tag feasible">✅ Feasible</span>}
+                      {!v.feasible && <span className="constraint-tag infeasible">Restricted</span>}
+                      {v.feasible && <span className="constraint-tag feasible">Feasible</span>}
                     </div>
                     {v.constraints.map((c, i) => (
-                      <div key={i} style={{ fontSize: '0.78rem', color: 'var(--rose)', marginBottom: '0.2rem' }}>⛔ {c}</div>
+                      <div key={i} style={{ fontSize: '0.78rem', color: 'var(--rose)', marginBottom: '0.2rem' }}>Restriction: {c}</div>
                     ))}
                     {v.warnings.map((w, i) => (
-                      <div key={i} style={{ fontSize: '0.78rem', color: 'var(--amber)', marginBottom: '0.2rem' }}>⚠️ {w}</div>
+                      <div key={i} style={{ fontSize: '0.78rem', color: 'var(--amber)', marginBottom: '0.2rem' }}>Advisory: {w}</div>
                     ))}
                   </div>
 
@@ -163,20 +163,20 @@ export default function CharterOptimizer({ routes, onOptimize, optimizeResult })
                 </div>
                 {idle.seasonalNote && (
                   <div style={{ marginTop: '0.75rem', padding: '0.5rem', background: 'var(--amber-dim)', borderRadius: 'var(--radius-sm)', fontSize: '0.78rem', color: 'var(--amber)' }}>
-                    🌧️ {idle.seasonalNote}
+                    Seasonal Note: {idle.seasonalNote}
                   </div>
                 )}
               </div>
 
               <div className="glass-card">
-                <h3 style={{ fontSize: '0.9rem', fontWeight: 700, marginBottom: '0.75rem' }}>📅 Laycan Recommendation</h3>
+                <h3 style={{ fontSize: '0.9rem', fontWeight: 700, marginBottom: '0.75rem' }}>Laycan Recommendation</h3>
                 <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', lineHeight: 1.6, marginBottom: '1rem' }}>
                   {idle.laycanRecommendation.note}
                 </p>
                 <h4 style={{ fontSize: '0.8rem', fontWeight: 700, marginBottom: '0.5rem', color: 'var(--text-muted)' }}>Mitigation Strategies</h4>
                 {idle.mitigationStrategies.map((s, i) => (
                   <div key={i} style={{ fontSize: '0.78rem', color: 'var(--text-secondary)', marginBottom: '0.3rem', paddingLeft: '1rem', position: 'relative' }}>
-                    <span style={{ position: 'absolute', left: 0, color: 'var(--cyan)' }}>→</span>
+                    <span style={{ position: 'absolute', left: 0, color: 'var(--cyan)' }}>•</span>
                     {s}
                   </div>
                 ))}
@@ -189,7 +189,7 @@ export default function CharterOptimizer({ routes, onOptimize, optimizeResult })
             <div className="glass-card" style={{ marginTop: '1.25rem' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem' }}>
                 <div>
-                  <h3 style={{ fontSize: '0.9rem', fontWeight: 700, marginBottom: '0.5rem' }}>🎯 Market Entry Signal</h3>
+                  <h3 style={{ fontSize: '0.9rem', fontWeight: 700, marginBottom: '0.5rem' }}>Market Entry Signal</h3>
                   <span className={`signal-badge ${entry.signal.toLowerCase().replace(' ', '-')}`} style={{ fontSize: '1rem', padding: '0.5rem 1.25rem' }}>
                     {entry.signal}
                   </span>

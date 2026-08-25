@@ -112,7 +112,7 @@ export default function FreightForecaster({ routes, onForecast, forecastResult }
   return (
     <div className="fade-in">
       <div className="section-header">
-        <h2>📈 Multi-Horizon Freight Rate Forecaster</h2>
+        <h2>Multi-Horizon Freight Rate Forecaster</h2>
         <p>AI-powered rate projections with confidence intervals for optimal chartering decisions</p>
       </div>
 
@@ -129,7 +129,7 @@ export default function FreightForecaster({ routes, onForecast, forecastResult }
             </select>
           </div>
           <button className="btn btn-primary" onClick={handleForecast} disabled={!selectedRoute}>
-            🔮 Generate Forecast
+            Calculate Forecast
           </button>
         </div>
       </div>
@@ -253,7 +253,7 @@ export default function FreightForecaster({ routes, onForecast, forecastResult }
           {entry && (
             <div className="two-col">
               <div className="glass-card">
-                <h3 style={{ fontSize: '0.9rem', fontWeight: 700, marginBottom: '0.75rem' }}>🎯 Optimal Market Entry Signal</h3>
+                <h3 style={{ fontSize: '0.9rem', fontWeight: 700, marginBottom: '0.75rem' }}>Optimal Market Entry Signal</h3>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1rem' }}>
                   <span className={`signal-badge ${entry.signal.toLowerCase().replace(' ', '-')}`} style={{ fontSize: '1rem', padding: '0.5rem 1.25rem' }}>
                     {entry.signal}
@@ -280,7 +280,7 @@ export default function FreightForecaster({ routes, onForecast, forecastResult }
               </div>
 
               <div className="glass-card">
-                <h3 style={{ fontSize: '0.9rem', fontWeight: 700, marginBottom: '0.75rem' }}>💰 Spot vs Time Charter Comparison</h3>
+                <h3 style={{ fontSize: '0.9rem', fontWeight: 700, marginBottom: '0.75rem' }}>Spot vs Time Charter Comparison</h3>
                 <table className="data-table">
                   <tbody>
                     <tr>
@@ -306,7 +306,7 @@ export default function FreightForecaster({ routes, onForecast, forecastResult }
                   </tbody>
                 </table>
                 <div style={{ marginTop: '0.75rem', padding: '0.6rem', background: 'var(--blue-dim)', borderRadius: 'var(--radius-sm)', fontSize: '0.78rem', color: 'var(--blue)' }}>
-                  💡 Recommendation: {entry.spotVsTC.recommendation}
+                  Strategy Recommendation: {entry.spotVsTC.recommendation}
                 </div>
               </div>
             </div>
@@ -314,7 +314,7 @@ export default function FreightForecaster({ routes, onForecast, forecastResult }
 
           {/* Model Metrics */}
           <div className="glass-card" style={{ marginTop: '1.25rem' }}>
-            <h3 style={{ fontSize: '0.9rem', fontWeight: 700, marginBottom: '0.75rem' }}>📐 Model Performance Metrics</h3>
+            <h3 style={{ fontSize: '0.9rem', fontWeight: 700, marginBottom: '0.75rem' }}>Model Performance Metrics</h3>
             <div className="dashboard-grid" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))' }}>
               {[
                 { label: 'MAPE', value: `${fr.metrics.mape}%`, color: 'cyan' },

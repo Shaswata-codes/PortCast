@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Ship } from 'lucide-react';
 import Navbar from './components/Navbar';
 import MarketTicker from './components/MarketTicker';
 import TabNav from './components/TabNav';
@@ -84,7 +85,9 @@ function App() {
         minHeight: '100vh', padding: '2rem',
         flexDirection: 'column', gap: '1rem',
       }}>
-        <div style={{ fontSize: '3rem' }}>🚢</div>
+        <div style={{ padding: '1rem', background: 'rgba(6, 182, 212, 0.1)', borderRadius: '50%' }}>
+          <Ship size={40} color="#06b6d4" />
+        </div>
         <h1 style={{
           fontSize: '1.5rem', fontWeight: 800,
           background: 'linear-gradient(135deg, #06b6d4, #3b82f6)',
@@ -116,14 +119,16 @@ function App() {
         display: 'flex', alignItems: 'center', justifyContent: 'center',
         minHeight: '100vh', flexDirection: 'column', gap: '1.5rem',
       }}>
-        <div style={{ fontSize: '3rem', animation: 'pulse-badge 2s infinite' }}>🚢</div>
+        <div style={{ padding: '1.25rem', background: 'rgba(6, 182, 212, 0.1)', borderRadius: '50%' }}>
+          <Ship size={48} color="#06b6d4" />
+        </div>
         <h1 style={{
           fontSize: '1.5rem', fontWeight: 800,
           background: 'linear-gradient(135deg, #06b6d4, #3b82f6)',
           WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent',
         }}>PortCast</h1>
         <div className="spinner" />
-        <div style={{ fontSize: '0.82rem', color: '#64748b' }}>Loading freight intelligence...</div>
+        <div style={{ fontSize: '0.82rem', color: '#64748b' }}>Loading maritime freight intelligence...</div>
       </div>
     );
   }

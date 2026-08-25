@@ -33,7 +33,7 @@ export default function RiskRadar({ alerts, routes, onSimulate, simulationResult
       <div className="chart-container" style={{ marginBottom: '1.25rem' }}>
         <div className="chart-header">
           <div>
-            <div className="chart-title">🚨 Active Risk Alerts</div>
+            <div className="chart-title">Active Disruption & Geopolitical Risk Alerts</div>
             <div className="chart-subtitle">Live monitoring of weather, geopolitical, and market risks</div>
           </div>
         </div>
@@ -46,9 +46,9 @@ export default function RiskRadar({ alerts, routes, onSimulate, simulationResult
               </span>
             </div>
             <div className="alert-desc">{alert.description}</div>
-            <div className="alert-impact">📊 Impact: {alert.impact}</div>
+            <div className="alert-impact">Impact Assessment: {alert.impact}</div>
             <div style={{ fontSize: '0.78rem', color: 'var(--cyan)', marginTop: '0.3rem' }}>
-              💡 {alert.recommendation}
+              Advisory: {alert.recommendation}
             </div>
             {alert.affectedRoutes?.length > 0 && (
               <div style={{ marginTop: '0.4rem', display: 'flex', gap: '0.3rem', flexWrap: 'wrap' }}>
@@ -67,7 +67,7 @@ export default function RiskRadar({ alerts, routes, onSimulate, simulationResult
       <div className="chart-container">
         <div className="chart-header">
           <div>
-            <div className="chart-title">🔬 What-If Scenario Simulator</div>
+            <div className="chart-title">What-If Scenario Stress Simulator</div>
             <div className="chart-subtitle">Stress-test route economics with custom shock parameters</div>
           </div>
         </div>
@@ -125,14 +125,14 @@ export default function RiskRadar({ alerts, routes, onSimulate, simulationResult
         </div>
 
         <button className="btn btn-primary" onClick={handleSimulate} disabled={!selectedRoute}>
-          🔮 Run Simulation
+          Run Scenario Stress-Test
         </button>
       </div>
 
       {/* Simulation Results */}
       {sim && (
         <div className="glass-card" style={{ marginTop: '1.25rem' }}>
-          <h3 style={{ fontSize: '1rem', fontWeight: 700, marginBottom: '1rem' }}>📊 Simulation Results</h3>
+          <h3 style={{ fontSize: '1rem', fontWeight: 700, marginBottom: '1rem' }}>Simulation Stress-Test Results</h3>
 
           <div className="two-col">
             <div>

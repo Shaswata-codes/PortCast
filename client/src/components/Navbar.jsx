@@ -1,13 +1,16 @@
 import React from 'react';
+import { Ship } from 'lucide-react';
 
 export default function Navbar() {
   return (
     <nav className="navbar">
       <div className="navbar-brand">
-        <div className="logo-icon">🚢</div>
+        <div className="logo-icon" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <Ship size={20} color="#06b6d4" />
+        </div>
         <div>
           <h1>PortCast</h1>
-          <span className="subtitle">Intelligent Freight Intelligence</span>
+          <span className="subtitle">Maritime Freight Intelligence & Chartering Optimization</span>
         </div>
       </div>
       <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
