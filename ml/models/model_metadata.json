@@ -1,0 +1,21 @@
+{
+  "metrics": {
+    "rmse": 0.04209466313882848,
+    "mae": 0.029135307367150424,
+    "r2": 0.9997508771107295
+  },
+  "top_features": {
+    "bdry_close": 3746.0,
+    "rate_ma_7": 448.0,
+    "rate_momentum_14": 422.0,
+    "rate_momentum_7": 420.0,
+    "rate_momentum_30": 362.0,
+    "rate_std_7": 325.0,
+    "rate_ma_14": 289.0,
+    "sblk_close": 252.0,
+    "comm_aluminum": 230.0,
+    "gnk_close": 228.0
+  },
+  "feature_count": 34,
+  "status": "ready"
+}

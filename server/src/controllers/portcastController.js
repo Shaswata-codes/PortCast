@@ -9,6 +9,7 @@ import { shippingRoutes } from '../data/routesData.js';
 import { forecastRates, detectOptimalEntry, generateHistoricalRates, generateBalticIndices } from '../services/forecastingEngine.js';
 import { optimizeVessel, assessIdleRisk } from '../services/optimizerEngine.js';
 import { generateRiskAlerts, simulateScenario } from '../services/riskEngine.js';
+import { fetchMLRadar, fetchMLForecast, fetchMLOptimize } from '../services/mlBridgeService.js';
 
 // GET /api/ports
 export function getPorts(req, res) {
@@ -29,11 +30,29 @@ export function getRoutes(req, res) {
 }
 
 // GET /api/dashboard
-export function getDashboard(req, res) {
+export async function getDashboard(req, res) {
   const balticData = generateBalticIndices();
   const latest = balticData[balticData.length - 1];
   const prev = balticData[balticData.length - 2];
-  const alerts = generateRiskAlerts();
+  let alerts = generateRiskAlerts();
+
+  // Check live ML Geopolitical radar
+  const mlRadar = await fetchMLRadar();
+  if (mlRadar && mlRadar.alerts && mlRadar.alerts.length > 0) {
+    const liveAlerts = mlRadar.alerts.map(a => ({
+      id: `GEO_${a.chokepoint_key || 'RADAR'}`,
+      severity: a.severity,
+      type: 'GEOPOLITICAL',
+      title: `${a.chokepoint}: ${a.title}`,
+      description: a.summary,
+      impact: `Risk Index: ${mlRadar.risk_index}/100 — Multiplier: x${mlRadar.rate_multiplier}`,
+      affectedPorts: ['paradip', 'vizag', 'haldia'],
+      affectedRoutes: a.routes_affected,
+      recommendation: 'Monitor active chokepoints and evaluate earlier charter fixtures.',
+      timestamp: a.published || new Date().toISOString()
+    }));
+    alerts = [...liveAlerts, ...alerts];
+  }
 
   // Quick forecast snapshot for top 5 routes
   const topRoutes = shippingRoutes.slice(0, 5);
@@ -62,9 +81,10 @@ export function getDashboard(req, res) {
       vlsfo: { value: latest.vlsfo, unit: '$/MT' },
       mgo: { value: latest.mgo, unit: '$/MT' },
     },
+    mlRadar: mlRadar || null,
     balticHistory: balticData.slice(-90),
     routeSnapshots: snapshots,
-    alerts: alerts.filter(a => a.severity === 'HIGH' || a.severity === 'CRITICAL'),
+    alerts: alerts.filter(a => a.severity === 'HIGH' || a.severity === 'CRITICAL' || a.severity === 'LOW'),
     portsCount: destinationPorts.length,
     routesCount: shippingRoutes.length,
     timestamp: new Date().toISOString(),
@@ -72,21 +92,28 @@ export function getDashboard(req, res) {
 }
 
 // POST /api/forecast
-export function getForcast(req, res) {
+export async function getForcast(req, res) {
   const { routeId } = req.body;
   const route = shippingRoutes.find(r => r.id === routeId);
   if (!route) {
     return res.status(400).json({ error: `Route ${routeId} not found` });
   }
 
+  // Try live ML microservice forecast
+  const mlForecast = await fetchMLForecast(route.id, route.baseFreightRate, route.distanceNM, route.commodity);
+
   const forecast = forecastRates(route);
   const entry = detectOptimalEntry(forecast);
 
-  res.json({ forecast, optimalEntry: entry });
+  res.json({
+    forecast,
+    optimalEntry: entry,
+    mlEngine: mlForecast || { status: 'fallback_active' }
+  });
 }
 
 // POST /api/optimize
-export function getOptimization(req, res) {
+export async function getOptimization(req, res) {
   const { routeId, parcelSizeMT = 70000, bunkerPrice = 620 } = req.body;
   const route = shippingRoutes.find(r => r.id === routeId);
   if (!route) {
@@ -98,6 +125,9 @@ export function getOptimization(req, res) {
     return res.status(400).json({ error: `Destination port not found` });
   }
 
+  // Live ML optimizer
+  const mlOptimization = await fetchMLOptimize(destPort.id, route.distanceNM, parcelSizeMT, route.baseFreightRate, bunkerPrice);
+
   const optimization = optimizeVessel(route, destPort, parcelSizeMT, bunkerPrice);
   const idleRisk = assessIdleRisk(destPort, route, parcelSizeMT);
 
@@ -105,13 +135,36 @@ export function getOptimization(req, res) {
   const forecast = forecastRates(route);
   const entry = detectOptimalEntry(forecast);
 
-  res.json({ optimization, idleRisk, optimalEntry: entry });
+  res.json({
+    optimization,
+    idleRisk,
+    optimalEntry: entry,
+    mlEngine: mlOptimization || { status: 'fallback_active' }
+  });
 }
 
 // GET /api/risk
-export function getRiskAlerts(req, res) {
-  const alerts = generateRiskAlerts();
-  res.json({ alerts, timestamp: new Date().toISOString() });
+export async function getRiskAlerts(req, res) {
+  let alerts = generateRiskAlerts();
+  const mlRadar = await fetchMLRadar();
+  
+  if (mlRadar && mlRadar.alerts && mlRadar.alerts.length > 0) {
+    const liveAlerts = mlRadar.alerts.map(a => ({
+      id: `GEO_${a.chokepoint_key || 'RADAR'}`,
+      severity: a.severity,
+      type: 'GEOPOLITICAL',
+      title: `${a.chokepoint}: ${a.title}`,
+      description: a.summary,
+      impact: `Risk Index: ${mlRadar.risk_index}/100 — Rate Multiplier: x${mlRadar.rate_multiplier}`,
+      affectedPorts: ['paradip', 'vizag', 'haldia'],
+      affectedRoutes: a.routes_affected,
+      recommendation: 'Monitor active chokepoints and evaluate earlier charter fixtures.',
+      timestamp: a.published || new Date().toISOString()
+    }));
+    alerts = [...liveAlerts, ...alerts];
+  }
+
+  res.json({ alerts, mlRadar: mlRadar || null, timestamp: new Date().toISOString() });
 }
 
 // POST /api/simulate

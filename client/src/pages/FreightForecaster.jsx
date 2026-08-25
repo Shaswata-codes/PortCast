@@ -186,6 +186,48 @@ export default function FreightForecaster({ routes, onForecast, forecastResult }
             </div>
           )}
 
+          {/* Live ML Engine Insights Card */}
+          {forecastResult?.mlEngine && forecastResult.mlEngine.status !== 'fallback_active' && (
+            <div className="glass-card" style={{ marginBottom: '1.25rem', border: '1px solid rgba(6, 182, 212, 0.4)', background: 'linear-gradient(135deg, rgba(6, 182, 212, 0.08), rgba(59, 130, 246, 0.05))' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.75rem', flexWrap: 'wrap', gap: '0.5rem' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                  <span style={{ fontSize: '1.2rem' }}>⚡</span>
+                  <h3 style={{ fontSize: '0.95rem', fontWeight: 700, color: 'var(--cyan)' }}>Live ML Intelligence Engine (LightGBM + Geopolitical Radar)</h3>
+                </div>
+                <span className="kpi-badge cyan">
+                  Risk Index: {forecastResult.mlEngine.geopolitical_risk_index}/100 (x{forecastResult.mlEngine.rate_multiplier_applied} Multiplier)
+                </span>
+              </div>
+              <div className="dashboard-grid" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '0.75rem' }}>
+                <div style={{ padding: '0.75rem', background: 'rgba(10, 22, 40, 0.6)', borderRadius: '8px' }}>
+                  <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>ML Current Adjusted Rate</div>
+                  <div style={{ fontSize: '1.2rem', fontWeight: 800, color: 'var(--cyan)' }}>${forecastResult.mlEngine.current_rate_pmt}/MT</div>
+                  <div style={{ fontSize: '0.7rem', color: 'var(--text-secondary)' }}>Includes live shock premium</div>
+                </div>
+                <div style={{ padding: '0.75rem', background: 'rgba(10, 22, 40, 0.6)', borderRadius: '8px' }}>
+                  <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>7-Day Quantile Band</div>
+                  <div style={{ fontSize: '1.1rem', fontWeight: 700, color: 'var(--amber)' }}>
+                    ${forecastResult.mlEngine.forecast_horizons['7d'].p10_lower} – ${forecastResult.mlEngine.forecast_horizons['7d'].p90_upper}
+                  </div>
+                  <div style={{ fontSize: '0.7rem', color: 'var(--text-secondary)' }}>P10 Lower / P90 Upper</div>
+                </div>
+                <div style={{ padding: '0.75rem', background: 'rgba(10, 22, 40, 0.6)', borderRadius: '8px' }}>
+                  <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>Optimal ML Booking Target</div>
+                  <div style={{ fontSize: '1.1rem', fontWeight: 700, color: 'var(--emerald)' }}>
+                    Day {forecastResult.mlEngine.optimal_booking.target_day} (${forecastResult.mlEngine.optimal_booking.projected_rate}/MT)
+                  </div>
+                  <div style={{ fontSize: '0.7rem', color: 'var(--text-secondary)' }}>Signal: {forecastResult.mlEngine.optimal_booking.signal}</div>
+                </div>
+                <div style={{ padding: '0.75rem', background: 'rgba(10, 22, 40, 0.6)', borderRadius: '8px' }}>
+                  <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>Active Monitored Chokepoints</div>
+                  <div style={{ fontSize: '0.78rem', fontWeight: 600, color: 'var(--rose)', marginTop: '0.2rem' }}>
+                    {forecastResult.mlEngine.active_chokepoints?.join(', ') || 'Hormuz, Malacca, Bay of Bengal'}
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
           {/* Horizon Pills */}
           <div className="glass-card" style={{ marginBottom: '1.25rem' }}>
             <h3 style={{ fontSize: '0.9rem', fontWeight: 700, marginBottom: '1rem' }}>Forecast Horizons</h3>
