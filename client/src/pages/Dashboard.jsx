@@ -82,7 +82,7 @@ export default function Dashboard({ data }) {
   return (
     <div className="fade-in">
       <div className="section-header">
-        <h2>📊 Executive Overview</h2>
+        <h2>Executive Market Overview</h2>
         <p>Real-time market intelligence for East Coast India bulk freight procurement</p>
       </div>
 
@@ -171,7 +171,7 @@ export default function Dashboard({ data }) {
       <div className="chart-container" style={{ marginBottom: '1.25rem' }}>
         <div className="chart-header">
           <div>
-            <div className="chart-title">📋 Top Route Forecasts & Chartering Signals</div>
+            <div className="chart-title">Key Route Projections & Chartering Signals</div>
             <div className="chart-subtitle">AI-generated optimal entry recommendations</div>
           </div>
         </div>

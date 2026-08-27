@@ -15,7 +15,7 @@ export default function PortRestrictions({ ports }) {
   return (
     <div className="fade-in">
       <div className="section-header">
-        <h2>⚓ Port Restriction & Fleet Compatibility Matrix</h2>
+        <h2>Port Infrastructure & Fleet Compatibility Matrix</h2>
         <p>Physical infrastructure constraints, vessel feasibility, and operational specs for all East Coast Indian ports</p>
       </div>
 
@@ -23,8 +23,8 @@ export default function PortRestrictions({ ports }) {
       <div className="chart-container" style={{ marginBottom: '1.25rem', overflowX: 'auto' }}>
         <div className="chart-header">
           <div>
-            <div className="chart-title">Vessel ↔ Port Feasibility Matrix</div>
-            <div className="chart-subtitle">✅ Feasible &nbsp; ⚠️ Restricted &nbsp; ❌ Not Feasible</div>
+            <div className="chart-title">Vessel Class ↔ Port Compatibility Matrix</div>
+            <div className="chart-subtitle">Draft and dimensional compliance for East Coast terminals</div>
           </div>
         </div>
         <table className="data-table">
@@ -149,7 +149,7 @@ export default function PortRestrictions({ ports }) {
             <div className="vessel-compat">
               {Object.entries(port.vesselFeasibility || {}).map(([vc, feasible]) => (
                 <span key={vc} className={`constraint-tag ${feasible ? 'feasible' : 'infeasible'}`}>
-                  {feasible ? '✅' : '❌'} {vesselLabels[vc]?.label || vc}
+                  {feasible ? 'Feasible' : 'Restricted'} • {vesselLabels[vc]?.label || vc}
                 </span>
               ))}
             </div>
@@ -161,13 +161,13 @@ export default function PortRestrictions({ ports }) {
 
             {port.lighterageRequired && (
               <div style={{ marginTop: '0.5rem', padding: '0.4rem 0.6rem', background: 'var(--rose-dim)', borderRadius: 'var(--radius-sm)', fontSize: '0.72rem', color: 'var(--rose)' }}>
-                ⚠️ Lighterage: {port.lighterageNote}
+                Lighterage: {port.lighterageNote}
               </div>
             )}
 
             {!port.nightNavigation && (
               <div style={{ marginTop: '0.5rem', padding: '0.4rem 0.6rem', background: 'var(--amber-dim)', borderRadius: 'var(--radius-sm)', fontSize: '0.72rem', color: 'var(--amber)' }}>
-                🌙 Night Navigation: Restricted
+                Night Navigation: Restricted
               </div>
             )}
           </div>

@@ -5,11 +5,13 @@ import {
   getVessels,
   getRoutes,
   getDashboard,
-  getForcast,
+  getForecast,
   getOptimization,
   getRiskAlerts,
   runSimulation,
   getPortDetails,
+  getPortComparison,
+  getExplanation,
 } from '../controllers/portcastController.js';
 
 const router = express.Router();
@@ -23,12 +25,14 @@ router.get('/health', (req, res) => {
 router.get('/dashboard', getDashboard);
 router.get('/ports', getPorts);
 router.get('/ports/:id', getPortDetails);
+router.get('/optimize/ports', getPortComparison);
 router.get('/vessels', getVessels);
 router.get('/routes', getRoutes);
-router.post('/forecast', getForcast);
+router.post('/forecast', getForecast);
 router.post('/optimize', getOptimization);
 router.get('/risk', getRiskAlerts);
 router.post('/simulate', runSimulation);
+router.post('/explain', getExplanation);
 
 // User routes (auth)
 router.use('/users', userRoutes);
