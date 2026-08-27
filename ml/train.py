@@ -24,7 +24,7 @@ try:
     XGBOOST_AVAILABLE = True
 except ImportError:
     XGBOOST_AVAILABLE = False
-    print("⚠️  xgboost not installed — skipping XGBoost training. pip install xgboost>=2.0")
+    print("[WARN] xgboost not installed -- skipping XGBoost training. pip install xgboost>=2.0")
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DATA_PATH = os.path.join(BASE_DIR, "ml", "data", "processed_freight_master.csv")
@@ -82,7 +82,7 @@ def train_models():
     mae_lgb = mean_absolute_error(y_test, preds)
     r2_lgb = r2_score(y_test, preds)
 
-    print(f"✅ LightGBM Test Metrics: RMSE = {rmse_lgb:.4f} | MAE = {mae_lgb:.4f} | R² = {r2_lgb:.4f}")
+    print(f"[OK] LightGBM Test Metrics: RMSE = {rmse_lgb:.4f} | MAE = {mae_lgb:.4f} | R2 = {r2_lgb:.4f}")
 
     # 1b. Train XGBoost (if available) + hybrid ensemble
     xgb_model = None
@@ -105,22 +105,22 @@ def train_models():
         rmse_xgb = np.sqrt(mean_squared_error(y_test, preds_xgb))
         mae_xgb = mean_absolute_error(y_test, preds_xgb)
         r2_xgb = r2_score(y_test, preds_xgb)
-        print(f"✅ XGBoost Test Metrics:  RMSE = {rmse_xgb:.4f} | MAE = {mae_xgb:.4f} | R² = {r2_xgb:.4f}")
+        print(f"[OK] XGBoost Test Metrics:  RMSE = {rmse_xgb:.4f} | MAE = {mae_xgb:.4f} | R2 = {r2_xgb:.4f}")
 
         # Hybrid ensemble = mean(lightgbm, xgboost)
         preds_ens = (preds + preds_xgb) / 2.0
         rmse_ens = np.sqrt(mean_squared_error(y_test, preds_ens))
         mae_ens = mean_absolute_error(y_test, preds_ens)
         r2_ens = r2_score(y_test, preds_ens)
-        print(f"🧬 Ensemble (avg):        RMSE = {rmse_ens:.4f} | MAE = {mae_ens:.4f} | R² = {r2_ens:.4f}")
+        print(f"[ENS] Ensemble (avg):        RMSE = {rmse_ens:.4f} | MAE = {mae_ens:.4f} | R2 = {r2_ens:.4f}")
 
         # Use the better of (LightGBM, ensemble) for downstream serving
         if r2_ens >= r2_lgb:
             rmse, mae, r2 = rmse_ens, mae_ens, r2_ens
-            print(f"→ Serving from HYBRID ensemble (R²={r2:.4f})")
+            print(f"-> Serving from HYBRID ensemble (R2={r2:.4f})")
         else:
             rmse, mae, r2 = rmse_lgb, mae_lgb, r2_lgb
-            print(f"→ Serving from LightGBM (R²={r2:.4f})")
+            print(f"-> Serving from LightGBM (R2={r2:.4f})")
     else:
         rmse, mae, r2 = rmse_lgb, mae_lgb, r2_lgb
 
@@ -183,7 +183,7 @@ def train_models():
 
     model_file = os.path.join(MODELS_DIR, "freight_forecasting_bundle.pkl")
     joblib.dump(model_bundle, model_file)
-    print(f"\n🎉 Saved model bundle to: {model_file}")
+    print(f"\n[DONE] Saved model bundle to: {model_file}")
 
     # Also save JSON metadata for fast Node.js reading
     metadata_file = os.path.join(MODELS_DIR, "model_metadata.json")

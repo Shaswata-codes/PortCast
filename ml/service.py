@@ -13,23 +13,13 @@ import joblib
 import numpy as np
 import pandas as pd
 from typing import Dict, Any, Optional
+from contextlib import asynccontextmanager
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
 from news_radar import analyze_geopolitical_risk
 from optimizer import optimize_charter
-
-app = FastAPI(title="PortCast ML Intelligence Service", version="1.0.0")
-
-# Enable CORS for React frontend and Node.js backend
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 MODELS_DIR = os.path.join(BASE_DIR, "ml", "models")
@@ -59,8 +49,9 @@ def load_models():
         except Exception as e:
             print(f"[ml] Rate history unavailable: {e}")
 
-@app.on_event("startup")
-def startup_event():
+@asynccontextmanager
+async def lifespan(application):
+    """Modern lifespan handler — runs on startup and shutdown."""
     load_models()
     import threading
     def _warm():
@@ -70,6 +61,19 @@ def startup_event():
         except Exception as e:
             print(f"[ml] radar warmup skipped: {e}")
     threading.Thread(target=_warm, daemon=True).start()
+    yield  # App runs here
+    print("[ml] Shutting down ML service")
+
+app = FastAPI(title="PortCast ML Intelligence Service", version="1.0.0", lifespan=lifespan)
+
+# Enable CORS for React frontend and Node.js backend
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 def _roll(hist, win, kind):
     seg = np.asarray(hist[-win:], dtype=float)

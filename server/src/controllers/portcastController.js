@@ -9,7 +9,7 @@ import { shippingRoutes } from '../data/routesData.js';
 import { forecastRates, detectOptimalEntry, generateHistoricalRates, generateBalticIndices } from '../services/forecastingEngine.js';
 import { optimizeVessel, assessIdleRisk, comparePorts } from '../services/optimizerEngine.js';
 import { generateRiskAlerts, simulateScenario } from '../services/riskEngine.js';
-import { fetchMLRadar, fetchMLForecast, fetchMLOptimize } from '../services/mlBridgeService.js';
+import { fetchMLRadar, fetchMLForecast, fetchMLOptimize, fetchMLSimulate, fetchMLHealth } from '../services/mlBridgeService.js';
 
 // GET /api/ports
 export function getPorts(req, res) {
@@ -215,7 +215,7 @@ export async function getRiskAlerts(req, res) {
 }
 
 // POST /api/simulate
-export function runSimulation(req, res) {
+export async function runSimulation(req, res) {
   const { routeId, scenario } = req.body;
   const route = shippingRoutes.find(r => r.id === routeId);
   if (!route) {
@@ -225,7 +225,20 @@ export function runSimulation(req, res) {
   const baseForecast = forecastRates(route);
   const simulated = simulateScenario(baseForecast, scenario || {});
 
-  res.json({ base: baseForecast, simulated });
+  // Try ML-powered simulation for sensitivity analysis
+  const mlSimulation = await fetchMLSimulate(
+    route.baseFreightRate,
+    scenario?.fuelPriceDelta || 0,
+    scenario?.waitDaysDelta || 0,
+    scenario?.demandShock || 0,
+    scenario?.geopoliticalShock || false
+  );
+
+  res.json({
+    base: baseForecast,
+    simulated,
+    mlSimulation: mlSimulation || { status: 'fallback_active' }
+  });
 }
 
 // GET /api/ports/:id
