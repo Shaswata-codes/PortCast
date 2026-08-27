@@ -11,3 +11,11 @@ yarn-error.log*
 ml/venv/
 ml/data/processed_freight_master.csv
 ml/__pycache__/
+
+# Agentic / working docs (not for source control)
+AGENTS.md
+PROMPT_UI.md
+DEMO.md
+CHANGELOG.md
+.commandcode/
+scratch/
