@@ -1,21 +1,33 @@
 {
   "metrics": {
-    "rmse": 0.04209466313882848,
-    "mae": 0.029135307367150424,
-    "r2": 0.9997508771107295
+    "rmse": 0.20071442120011712,
+    "mae": 0.1465706894350142,
+    "r2": 0.9943336969079936,
+    "lightgbm": {
+      "rmse": 0.20591990413051575,
+      "mae": 0.15481953148353422,
+      "r2": 0.9940359771143356
+    },
+    "xgboost": {
+      "rmse": 0.2425664719630914,
+      "mae": 0.17031977508735957,
+      "r2": 0.9917243104620368
+    },
+    "ensemble": "LightGBM + XGBoost (mean)"
   },
   "top_features": {
-    "bdry_close": 3746.0,
-    "rate_ma_7": 448.0,
-    "rate_momentum_14": 422.0,
-    "rate_momentum_7": 420.0,
-    "rate_momentum_30": 362.0,
-    "rate_std_7": 325.0,
-    "rate_ma_14": 289.0,
-    "sblk_close": 252.0,
-    "comm_aluminum": 230.0,
-    "gnk_close": 228.0
+    "rate_ma_14": 0.6311941510966694,
+    "rate_ma_7": 0.5888315516292101,
+    "rate_momentum_7": 0.5001222790957962,
+    "rate_lag_1": 0.49793388188496746,
+    "rate_lag_7": 0.26247623388970054,
+    "rate_momentum_14": 0.24867375926622234,
+    "rate_lag_14": 0.19025660963589155,
+    "rate_momentum_30": 0.1825357125607957,
+    "rate_std_14": 0.16085900689839316,
+    "rate_ma_30": 0.15756868195398566
   },
-  "feature_count": 34,
+  "feature_count": 39,
+  "ensemble": "LightGBM + XGBoost (mean)",
   "status": "ready"
 }
