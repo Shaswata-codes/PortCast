@@ -5,6 +5,7 @@ export default defineConfig({
   plugins: [react()],
   server: {
     port: 5173,
+    allowedHosts: ['downloads-continued-singer-ballet.trycloudflare.com'],
     proxy: {
       '/api': {
         target: 'http://localhost:5000',

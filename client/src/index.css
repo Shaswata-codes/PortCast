@@ -1,3 +1,8 @@
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 /* =====================================================
    PortCast — Maritime Dark Glassmorphism Design System
    Ultra-modern freight intelligence platform styling
@@ -898,4 +903,168 @@ input[type="range"]::-webkit-slider-thumb:hover {
   .dashboard-grid { grid-template-columns: 1fr; }
   .three-col { grid-template-columns: 1fr; }
   .port-matrix { grid-template-columns: 1fr; }
+}
+
+/* =====================================================
+   PortCast New Design — Tailwind Component Layer
+   (ocean glassmorphism system used by src/preview_new)
+   ===================================================== */
+
+:root {
+  --ocean-950: #020617;
+  --ocean-900: #0a0f1e;
+  --ocean-800: #0f172a;
+  --ocean-700: #1e293b;
+  --ocean-600: #334155;
+  --cyan-400: #22d3ee;
+  --cyan-500: #06b6d4;
+  --amber-500: #f59e0b;
+  --emerald-500: #10b981;
+  --rose-500: #f43f5e;
+}
+
+.pc-new ::selection {
+  background-color: rgba(6, 182, 212, 0.3);
+  color: #fff;
+}
+
+.glass-card-hover {
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.glass-card-hover:hover {
+  background: rgba(15, 23, 42, 0.8);
+  border-color: rgba(34, 211, 238, 0.2);
+  box-shadow: 0 12px 48px rgba(6, 182, 212, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  transform: translateY(-4px);
+}
+
+.neon-border {
+  position: relative;
+}
+
+.neon-border::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(135deg, rgba(34, 211, 238, 0.3), transparent, rgba(34, 211, 238, 0.1));
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+.text-gradient {
+  background: linear-gradient(135deg, #22d3ee 0%, #06b6d4 50%, #0891b2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.text-gradient-amber {
+  background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.chart-glow {
+  filter: drop-shadow(0 0 8px rgba(6, 182, 212, 0.3));
+}
+
+.image-3d-container {
+  perspective: 1000px;
+  transform-style: preserve-3d;
+}
+
+.image-3d {
+  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  transform-style: preserve-3d;
+}
+
+.image-3d:hover {
+  transform: rotateY(5deg) rotateX(-5deg) scale(1.02);
+}
+
+.image-zoom {
+  overflow: hidden;
+}
+
+.image-zoom img {
+  transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.image-zoom:hover img {
+  transform: scale(1.1);
+}
+
+.shimmer-bg {
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.03), transparent);
+  background-size: 1000px 100%;
+  animation: shimmerBg 2s infinite;
+}
+
+@keyframes shimmerBg {
+  0% { background-position: -1000px 0; }
+  100% { background-position: 1000px 0; }
+}
+
+.status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  display: inline-block;
+  position: relative;
+}
+
+.status-dot::after {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  border-radius: 50%;
+  animation: pulseGlowDot 2s ease-in-out infinite;
+}
+
+.status-dot.green::after {
+  background: rgba(16, 185, 129, 0.3);
+}
+
+.status-dot.amber::after {
+  background: rgba(245, 158, 11, 0.3);
+}
+
+.status-dot.red::after {
+  background: rgba(244, 63, 94, 0.3);
+}
+
+@keyframes pulseGlowDot {
+  0%, 100% { opacity: 0.4; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.15); }
+}
+
+.grid-bg {
+  background-image:
+    linear-gradient(rgba(34, 211, 238, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(34, 211, 238, 0.03) 1px, transparent 1px);
+  background-size: 50px 50px;
+}
+
+.radar-grid {
+  background-image:
+    radial-gradient(circle at center, rgba(34, 211, 238, 0.05) 1px, transparent 1px);
+  background-size: 30px 30px;
+}
+
+.perspective-1000 {
+  perspective: 1000px;
+}
+
+.preserve-3d {
+  transform-style: preserve-3d;
+}
+
+.backface-hidden {
+  backface-visibility: hidden;
 }
