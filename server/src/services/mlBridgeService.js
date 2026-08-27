@@ -5,10 +5,20 @@
 
 const ML_SERVICE_URL = process.env.ML_SERVICE_URL || 'http://127.0.0.1:8000';
 
+async function fetchWithRetry(url, opts = {}, tries = 2) {
+  for (let i = 0; i < tries; i++) {
+    try {
+      return await fetch(url, { ...opts, signal: AbortSignal.timeout(4000) })
+    } catch (e) {
+      if (i === tries - 1) return null
+    }
+  }
+}
+
 export async function fetchMLRadar() {
   try {
-    const res = await fetch(`${ML_SERVICE_URL}/api/ml/radar`, { method: 'GET', headers: { 'Content-Type': 'application/json' } });
-    if (res.ok) {
+    const res = await fetchWithRetry(`${ML_SERVICE_URL}/api/ml/radar`, { method: 'GET', headers: { 'Content-Type': 'application/json' } });
+    if (res && res.ok) {
       return await res.json();
     }
   } catch (err) {
@@ -19,7 +29,7 @@ export async function fetchMLRadar() {
 
 export async function fetchMLForecast(routeId, baseRate, distanceNM, commodity) {
   try {
-    const res = await fetch(`${ML_SERVICE_URL}/api/ml/forecast`, {
+    const res = await fetchWithRetry(`${ML_SERVICE_URL}/api/ml/forecast`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -29,7 +39,7 @@ export async function fetchMLForecast(routeId, baseRate, distanceNM, commodity) 
         commodity: commodity || 'Thermal Coal'
       })
     });
-    if (res.ok) {
+    if (res && res.ok) {
       return await res.json();
     }
   } catch (err) {
@@ -40,7 +50,7 @@ export async function fetchMLForecast(routeId, baseRate, distanceNM, commodity) 
 
 export async function fetchMLOptimize(destinationPort, distanceNM, cargoMT, predictedRate, bunkerPrice) {
   try {
-    const res = await fetch(`${ML_SERVICE_URL}/api/ml/optimize`, {
+    const res = await fetchWithRetry(`${ML_SERVICE_URL}/api/ml/optimize`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -51,7 +61,7 @@ export async function fetchMLOptimize(destinationPort, distanceNM, cargoMT, pred
         bunker_price: Number(bunkerPrice) || 620.0
       })
     });
-    if (res.ok) {
+    if (res && res.ok) {
       return await res.json();
     }
   } catch (err) {

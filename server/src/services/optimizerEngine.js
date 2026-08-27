@@ -4,7 +4,8 @@
 // =====================================================
 
 import { vesselClasses } from '../data/vesselsData.js';
-import { destinationPorts } from '../data/portsData.js';
+import { destinationPorts, originPorts } from '../data/portsData.js';
+import { shippingRoutes } from '../data/routesData.js';
 
 /**
  * Evaluate all vessel classes for a given route and cargo parcel
@@ -232,4 +233,82 @@ export function assessIdleRisk(destPort, route, parcelSizeMT) {
       'Consider speed optimization (slow steaming) to align arrival with berth availability',
     ].filter(Boolean),
   };
+}
+
+/**
+ * Best Port Finder — compare all destination ports for an origin + parcel.
+ * Exact transit days where a route exists; great-circle estimate (14kn) otherwise.
+ */
+export function comparePorts(originId, parcelSizeMT, bunkerPriceVLSFO = 620) {
+  const origin = originPorts.find((o) => o.id === originId);
+  if (!origin) return { originId, results: [] };
+
+  const R = 3440.065; // nautical miles
+  const gc = (a, b) => {
+    const toRad = (x) => (x * Math.PI) / 180;
+    const dLat = toRad(b.lat - a.lat);
+    const dLon = toRad(b.lng - a.lng);
+    const h =
+      Math.sin(dLat / 2) ** 2 +
+      Math.cos(toRad(a.lat)) * Math.cos(toRad(b.lat)) * Math.sin(dLon / 2) ** 2;
+    return Math.round(2 * R * Math.asin(Math.sqrt(h)));
+  };
+
+  const results = destinationPorts.map((port) => {
+    const route = shippingRoutes.find(
+      (r) => r.origin === originId && r.destination === port.id
+    );
+    let estimated = false;
+    let transitDaysLaden;
+    let transitDaysBallast;
+    let baseFreightRate;
+
+    if (route) {
+      transitDaysLaden = route.transitDaysLaden;
+      transitDaysBallast = route.transitDaysBallast;
+      baseFreightRate = route.baseFreightRate;
+    } else {
+      estimated = true;
+      const nm = gc(origin, port);
+      transitDaysLaden = Math.max(2, Math.round((nm / (14 * 24)) * 10) / 10);
+      transitDaysBallast = Math.round(transitDaysLaden * 0.9 * 10) / 10;
+      baseFreightRate = Math.round((6 + nm * 0.0012) * 100) / 100;
+    }
+
+    const pseudoRoute = {
+      id: `CMP-${port.id}`,
+      origin: originId,
+      destination: port.id,
+      originName: origin.name,
+      destinationName: port.name,
+      transitDaysLaden,
+      transitDaysBallast,
+      baseFreightRate,
+      seasonalPremium: {},
+    };
+
+    const opt = optimizeVessel(pseudoRoute, port, parcelSizeMT, bunkerPriceVLSFO);
+    const best = opt.optimalVessel;
+
+    return {
+      portId: port.id,
+      portName: port.name,
+      state: port.state,
+      estimated,
+      feasible: opt.feasibleOptions > 0,
+      bestVessel: best ? best.vesselClass : null,
+      costPerMT: best ? best.totalCostPerMT : null,
+      totalCost: best ? best.costs.totalVoyageCost : null,
+      waitDays: port.avgWaitingDays,
+      lighterage: !!port.lighterageRequired,
+    };
+  });
+
+  results.sort((a, b) => {
+    if (a.feasible && !b.feasible) return -1;
+    if (!a.feasible && b.feasible) return 1;
+    return (a.costPerMT ?? Infinity) - (b.costPerMT ?? Infinity);
+  });
+
+  return { originId, parcelSizeMT, bunkerPriceVLSFO, results };
 }
