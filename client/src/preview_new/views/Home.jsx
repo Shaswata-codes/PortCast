@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { motion, useScroll, useTransform } from 'framer-motion'
 import {
   ArrowRight,
@@ -9,7 +9,17 @@ import {
   Sparkles,
   Compass,
   Ship,
+  Lock,
+  Mail,
+  ShieldCheck,
+  Eye,
+  EyeOff,
+  Loader2,
+  LogIn,
+  AlertCircle,
+  LayoutDashboard,
 } from 'lucide-react'
+import { loginUser, getStoredUser } from '../services/api'
 import FullPageVoyageBackground from '../components/FullPageVoyageBackground'
 import ScrollReveal from '../components/ScrollReveal'
 
@@ -60,7 +70,32 @@ const eastCoastPorts = [
   { name: 'Kamarajar (Ennore)', state: 'Tamil Nadu', maxDraft: '15.5m', berths: 8, cargo: 'Thermal Coal for TANGEDCO', highlight: 'Dedicated Coal Conveyor Grid' },
 ]
 
-export default function Home({ onNavigate }) {
+export default function Home({ onNavigate, user, onLoginSuccess }) {
+  const [loginEmail, setLoginEmail] = useState('')
+  const [loginPassword, setLoginPassword] = useState('')
+  const [showPassword, setShowPassword] = useState(false)
+  const [loginLoading, setLoginLoading] = useState(false)
+  const [loginError, setLoginError] = useState(null)
+  const [loginSuccess, setLoginSuccess] = useState(null)
+
+  const currentUser = user || getStoredUser()
+
+  const handleLoginSubmit = async (e) => {
+    e.preventDefault()
+    setLoginError(null)
+    setLoginSuccess(null)
+    setLoginLoading(true)
+    try {
+      const data = await loginUser(loginEmail, loginPassword)
+      setLoginSuccess(`Welcome, ${data.name}!`)
+      if (onLoginSuccess) onLoginSuccess(data)
+    } catch (err) {
+      setLoginError(err.response?.data?.message || err.message || 'Authentication failed')
+    } finally {
+      setLoginLoading(false)
+    }
+  }
+
   const { scrollYProgress } = useScroll()
 
   // Dynamic telemetry transforms based on scroll progression
@@ -189,87 +224,182 @@ export default function Home({ onNavigate }) {
                 </div>
               </div>
 
-              {/* Right Column: Live AI Voyage Dispatch Cockpit Card */}
+              {/* Right Column: Interactive Login Card */}
               <div className="lg:col-span-5">
-                <div className={`p-6 sm:p-7 rounded-3xl ${glassCard} border border-white/90 shadow-2xl relative overflow-hidden space-y-6`}>
+                <div className={`p-6 sm:p-7 rounded-3xl ${glassCard} border border-white/95 shadow-2xl relative overflow-hidden space-y-5 bg-white/90 backdrop-blur-2xl`}>
                   {/* Subtle top accent line */}
-                  <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-sky-600 via-teal-500 to-emerald-500" />
-                  
-                  {/* Card Header */}
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2.5">
-                      <div className="w-8 h-8 rounded-xl bg-sky-50 border border-sky-200 flex items-center justify-center">
-                        <Radar className="w-4 h-4 text-sky-700 animate-pulse" />
-                      </div>
-                      <div>
-                        <h2 className="text-sm font-bold text-slate-900 tracking-tight">Live Corridor Dispatch</h2>
-                        <p className="text-[10px] text-slate-600 font-mono">Bay of Bengal Operational Stream</p>
-                      </div>
-                    </div>
-                    <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-[10px] font-mono font-bold text-emerald-700">
-                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-ping" />
-                      ACTIVE FIXTURE
-                    </span>
-                  </div>
+                  <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-sky-600 via-teal-500 to-emerald-500" />
 
-                  {/* Primary Route Snapshot */}
-                  <div className="p-4 rounded-2xl bg-white/80 border border-slate-200/80 shadow-sm space-y-3">
-                    <div className="flex items-center justify-between text-xs">
-                      <span className="font-mono text-slate-600 font-medium">PRIMARY ROUTE</span>
-                      <span className="font-mono font-bold text-sky-700">Thermal Coal</span>
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <p className="text-base font-extrabold text-slate-900">Newcastle $\rightarrow$ Paradip</p>
-                        <p className="text-[11px] text-slate-600 font-mono">7,240 NM · Capesize (180k DWT)</p>
+                  {currentUser ? (
+                    /* Authenticated State View */
+                    <div className="space-y-5 py-2">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2.5">
+                          <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-sky-700 to-teal-600 text-white font-bold text-sm flex items-center justify-center shadow-md">
+                            {currentUser.name ? currentUser.name.split(' ').map(p => p[0]).join('').slice(0, 2) : 'U'}
+                          </div>
+                          <div>
+                            <h2 className="text-base font-bold text-slate-900 leading-tight">{currentUser.name}</h2>
+                            <p className="text-xs text-sky-700 font-mono font-semibold">{currentUser.role || 'Senior Freight Charterer'}</p>
+                          </div>
+                        </div>
+                        <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-[10px] font-mono font-bold text-emerald-700">
+                          <ShieldCheck className="w-3.5 h-3.5" />
+                          VERIFIED
+                        </span>
                       </div>
-                      <div className="text-right">
-                        <p className="text-xl font-extrabold text-slate-900 font-mono">$18.40</p>
-                        <p className="text-[11px] text-emerald-700 font-mono font-semibold flex items-center justify-end gap-0.5">
-                          <TrendingDown className="w-3 h-3" /> -2.4% Softening
-                        </p>
-                      </div>
-                    </div>
-                  </div>
 
-                  {/* AI Recommendation Box */}
-                  <div className="p-4 rounded-2xl bg-gradient-to-r from-sky-50/90 to-teal-50/90 border border-sky-200/80 space-y-2">
-                    <div className="flex items-center gap-2 text-xs font-bold text-sky-900">
-                      <Sparkles className="w-3.5 h-3.5 text-sky-700" />
-                      <span>AI FIXTURE RECOMMENDATION</span>
-                    </div>
-                    <p className="text-xs text-slate-800 leading-relaxed">
-                      <span className="font-bold text-teal-800">Lock Fixture on Day +12:</span> Projected rate trough at <strong>$15.80/MT</strong> delivers <span className="font-bold text-emerald-700">$390,000 net savings</span> over current spot.
-                    </p>
-                    <div className="grid grid-cols-2 gap-2 pt-2 border-t border-sky-200/50 text-[11px] font-mono">
-                      <div>
-                        <span className="text-slate-600 block">Paradip Berth Draft</span>
-                        <span className="font-bold text-slate-900">16.0m (Fully Feasible)</span>
+                      <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-200/80 text-xs font-mono space-y-1.5">
+                        <div className="flex justify-between text-slate-600">
+                          <span>Account Email:</span>
+                          <span className="font-bold text-slate-900">{currentUser.email}</span>
+                        </div>
+                        <div className="flex justify-between text-slate-600">
+                          <span>Security Status:</span>
+                          <span className="text-emerald-700 font-bold">JWT Session Encrypted</span>
+                        </div>
                       </div>
-                      <div>
-                        <span className="text-slate-600 block">Lighterage Needed</span>
-                        <span className="font-bold text-emerald-700">$0.00 (Direct Berth)</span>
-                      </div>
-                    </div>
-                  </div>
 
-                  {/* Quick Action Navigation Buttons */}
-                  <div className="grid grid-cols-2 gap-2.5 pt-1">
-                    <button
-                      onClick={() => handleNav('forecaster')}
-                      className="px-3.5 py-2.5 rounded-xl bg-sky-700 hover:bg-sky-800 text-white font-bold text-xs flex items-center justify-center gap-1.5 transition-colors shadow-sm"
-                    >
-                      <Compass className="w-3.5 h-3.5" />
-                      <span>30d Forecast</span>
-                    </button>
-                    <button
-                      onClick={() => handleNav('optimizer')}
-                      className="px-3.5 py-2.5 rounded-xl bg-white hover:bg-slate-50 border border-slate-200/90 text-slate-800 font-bold text-xs flex items-center justify-center gap-1.5 transition-colors shadow-sm"
-                    >
-                      <Ship className="w-3.5 h-3.5 text-slate-600" />
-                      <span>Vessel Optimizer</span>
-                    </button>
-                  </div>
+                      <div className="grid grid-cols-2 gap-3 pt-2">
+                        <button
+                          type="button"
+                          onClick={() => handleNav('dashboard')}
+                          className="px-4 py-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs flex items-center justify-center gap-2 transition-all shadow-md active:scale-95"
+                        >
+                          <LayoutDashboard className="w-4 h-4" />
+                          <span>Overview</span>
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => handleNav('forecaster')}
+                          className="px-4 py-3 rounded-xl bg-sky-700 hover:bg-sky-800 text-white font-bold text-xs flex items-center justify-center gap-2 transition-all shadow-md active:scale-95"
+                        >
+                          <Compass className="w-4 h-4" />
+                          <span>Forecaster</span>
+                        </button>
+                      </div>
+                    </div>
+                  ) : (
+                    /* Login Form View */
+                    <form onSubmit={handleLoginSubmit} className="space-y-4">
+                      <div className="flex items-center justify-between border-b border-slate-200/80 pb-3">
+                        <div className="flex items-center gap-2.5">
+                          <div className="w-8 h-8 rounded-xl bg-slate-900 text-white flex items-center justify-center shadow-sm">
+                            <Lock className="w-4 h-4 text-sky-400" />
+                          </div>
+                          <div>
+                            <h2 className="text-base font-extrabold text-slate-900 tracking-tight leading-tight">Charterer Sign In</h2>
+                            <p className="text-[11px] text-slate-600 font-mono">Enterprise Terminal Access</p>
+                          </div>
+                        </div>
+                        <span className="text-[10px] font-mono font-bold text-sky-700 bg-sky-50 px-2 py-0.5 rounded-md border border-sky-200">
+                          PROD SECURE
+                        </span>
+                      </div>
+
+                      {loginError && (
+                        <div className="p-2.5 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs flex items-center gap-2">
+                          <AlertCircle className="w-4 h-4 shrink-0" />
+                          <span className="font-medium">{loginError}</span>
+                        </div>
+                      )}
+
+                      {loginSuccess && (
+                        <div className="p-2.5 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs flex items-center gap-2">
+                          <CheckCircle2 className="w-4 h-4 shrink-0" />
+                          <span className="font-medium">{loginSuccess}</span>
+                        </div>
+                      )}
+
+                      <div className="space-y-3">
+                        <div>
+                          <label className="block text-xs font-semibold text-slate-700 mb-1">Corporate Email</label>
+                          <div className="relative">
+                            <Mail className="w-4 h-4 text-slate-500 absolute left-3 top-1/2 -translate-y-1/2" />
+                            <input
+                              type="email"
+                              required
+                              value={loginEmail}
+                              onChange={(e) => setLoginEmail(e.target.value)}
+                              placeholder="name@portcast.ai"
+                              className="w-full pl-9 pr-3 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs font-mono text-slate-900 focus:outline-none focus:ring-2 focus:ring-sky-600 focus:bg-white transition-all"
+                            />
+                          </div>
+                        </div>
+
+                        <div>
+                          <label className="block text-xs font-semibold text-slate-700 mb-1">Password</label>
+                          <div className="relative">
+                            <Lock className="w-4 h-4 text-slate-500 absolute left-3 top-1/2 -translate-y-1/2" />
+                            <input
+                              type={showPassword ? 'text' : 'password'}
+                              required
+                              value={loginPassword}
+                              onChange={(e) => setLoginPassword(e.target.value)}
+                              placeholder="••••••••"
+                              className="w-full pl-9 pr-9 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs font-mono text-slate-900 focus:outline-none focus:ring-2 focus:ring-sky-600 focus:bg-white transition-all"
+                            />
+                            <button
+                              type="button"
+                              onClick={() => setShowPassword(!showPassword)}
+                              className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-700"
+                            >
+                              {showPassword ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+
+                      <button
+                        type="submit"
+                        disabled={loginLoading}
+                        className="w-full py-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs flex items-center justify-center gap-2 transition-all shadow-md active:scale-95 disabled:opacity-60"
+                      >
+                        {loginLoading ? (
+                          <>
+                            <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                            <span>Authenticating...</span>
+                          </>
+                        ) : (
+                          <>
+                            <LogIn className="w-4 h-4" />
+                            <span>Sign In to Terminal</span>
+                          </>
+                        )}
+                      </button>
+
+                      {/* 1-Click Demo Accounts */}
+                      <div className="pt-2 border-t border-slate-200/80">
+                        <p className="text-[10px] text-slate-500 font-mono font-medium mb-1.5 uppercase tracking-wider">One-Click Demo Credentials:</p>
+                        <div className="grid grid-cols-2 gap-2">
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setLoginEmail('demo@portcast.ai')
+                              setLoginPassword('password123')
+                              setLoginError(null)
+                            }}
+                            className="p-2 rounded-xl bg-slate-100/90 hover:bg-sky-50 hover:border-sky-300 border border-slate-200 text-left transition-all group"
+                          >
+                            <p className="text-[11px] font-bold text-slate-900 group-hover:text-sky-900">Capt. Alex</p>
+                            <p className="text-[9px] text-slate-500 font-mono">Senior Charterer</p>
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setLoginEmail('charterer@portcast.ai')
+                              setLoginPassword('password123')
+                              setLoginError(null)
+                            }}
+                            className="p-2 rounded-xl bg-slate-100/90 hover:bg-teal-50 hover:border-teal-300 border border-slate-200 text-left transition-all group"
+                          >
+                            <p className="text-[11px] font-bold text-slate-900 group-hover:text-teal-900">Priya Sharma</p>
+                            <p className="text-[9px] text-slate-500 font-mono">Fleet Operator</p>
+                          </button>
+                        </div>
+                      </div>
+                    </form>
+                  )}
                 </div>
               </div>
 
