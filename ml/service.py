@@ -9,10 +9,12 @@ Exposes REST endpoints for:
 """
 
 import os
+import threading
 import joblib
 import numpy as np
 import pandas as pd
 from typing import Dict, Any, Optional
+from contextlib import asynccontextmanager
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
@@ -20,7 +22,26 @@ from pydantic import BaseModel
 from news_radar import analyze_geopolitical_risk
 from optimizer import optimize_charter
 
-app = FastAPI(title="PortCast ML Intelligence Service", version="1.0.0")
+@asynccontextmanager
+async def lifespan(_app):
+    load_models()
+
+    def _warm():
+        try:
+            get_geopolitical_radar()
+            print("[ml] radar cache warmed")
+        except Exception as e:
+            print(f"[ml] radar warmup skipped: {e}")
+
+    threading.Thread(target=_warm, daemon=True).start()
+    yield
+
+
+app = FastAPI(
+    title="PortCast ML Intelligence Service",
+    version="1.0.0",
+    lifespan=lifespan,
+)
 
 # Enable CORS for React frontend and Node.js backend
 app.add_middleware(
@@ -59,18 +80,6 @@ def load_models():
         except Exception as e:
             print(f"[ml] Rate history unavailable: {e}")
 
-@app.on_event("startup")
-def startup_event():
-    load_models()
-    import threading
-    def _warm():
-        try:
-            get_geopolitical_radar()
-            print("[ml] radar cache warmed")
-        except Exception as e:
-            print(f"[ml] radar warmup skipped: {e}")
-    threading.Thread(target=_warm, daemon=True).start()
-
 def _roll(hist, win, kind):
     seg = np.asarray(hist[-win:], dtype=float)
     if kind == "ma":
@@ -78,6 +87,14 @@ def _roll(hist, win, kind):
     if kind == "std":
         return float(seg.std())
     return float((seg[-1] - seg.mean()) / max(abs(seg.mean()), 1e-9))
+
+
+def _predict_point(bundle, X):
+    point_prediction = bundle["point_model"].predict(X)
+    xgb_model = bundle.get("xgb_model")
+    if xgb_model is not None:
+        point_prediction = (point_prediction + xgb_model.predict(X)) / 2.0
+    return point_prediction
 
 def _recursive_trajectory(days=30):
     """Recursive multi-step LightGBM forecast on the trained feature space."""
@@ -110,7 +127,7 @@ def _recursive_trajectory(days=30):
             row["is_sw_monsoon"] = int(5 <= m <= 8)
             row["is_cyclone_season"] = int(9 <= m <= 11)
             X = pd.DataFrame([[row.get(c, 0.0) for c in feats]], columns=feats)
-            pt = float(bundle["point_model"].predict(X)[0])
+            pt = float(_predict_point(bundle, X)[0])
             lo = float(bundle["p10_model"].predict(X)[0])
             hi = float(bundle["p90_model"].predict(X)[0])
             hist.append(pt)
