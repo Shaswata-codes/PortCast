@@ -2,6 +2,10 @@
   "version": 2,
   "builds": [
     {
+      "src": "ml/service.py",
+      "use": "@vercel/python"
+    },
+    {
       "src": "server/src/app.js",
       "use": "@vercel/node"
     },
@@ -14,6 +18,10 @@
     }
   ],
   "routes": [
+    {
+      "src": "/api/ml/(.*)",
+      "dest": "/ml/service.py"
+    },
     {
       "src": "/api/(.*)",
       "dest": "/server/src/app.js"
