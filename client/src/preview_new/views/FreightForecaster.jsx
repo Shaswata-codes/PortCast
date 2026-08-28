@@ -186,13 +186,12 @@ export default function FreightForecaster() {
   const forecastData = useMemo(() => {
     if (shockMult === 1) return baseData
     return baseData.map((row) => {
-      if (row.type !== 'forecast' && row.p90_upper == null) return row
+      if (row.type !== 'forecast') return row
       return {
         ...row,
-        pointForecast: row.pointForecast != null ? Number((row.pointForecast * shockMult).toFixed(2)) : row.pointForecast,
-        p10_lower: row.p10_lower != null ? Number((row.p10_lower * shockMult).toFixed(2)) : row.p10_lower,
-        p90_upper: row.p90_upper != null ? Number((row.p90_upper * shockMult).toFixed(2)) : row.p90_upper,
-        mlPoint: row.mlPoint != null ? Number((row.mlPoint * shockMult).toFixed(2)) : row.mlPoint,
+        rate: row.rate != null ? Number((row.rate * shockMult).toFixed(2)) : row.rate,
+        p10: row.p10 != null ? Number((row.p10 * shockMult).toFixed(2)) : row.p10,
+        p90: row.p90 != null ? Number((row.p90 * shockMult).toFixed(2)) : row.p90,
       }
     })
   }, [baseData, shockMult])
