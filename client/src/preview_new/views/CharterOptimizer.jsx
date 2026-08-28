@@ -146,75 +146,108 @@ export default function CharterOptimizer() {
 
       {/* Input Panel */}
       <ScrollReveal>
-        <AnimatedCard>
-          <h3 className="text-lg font-bold text-slate-900 mb-6 flex items-center gap-2">
-            <Package className="w-5 h-5 text-sky-700" />
-            Charter Parameters
-            {loading && (
-              <span className="text-xs font-mono text-amber-600 flex items-center gap-1.5 ml-2">
-                <span className="w-1.5 h-1.5 rounded-full bg-amber-500 status-dot amber" /> Evaluating...
-              </span>
-            )}
-          </h3>
-          <div className="grid md:grid-cols-3 gap-6">
-            <div>
-              <label className="text-sm text-slate-600 mb-2 block">Shipping Route</label>
+        <AnimatedCard className="border border-slate-200/80 shadow-sm bg-white">
+          <div className="flex flex-wrap items-center justify-between gap-3 mb-5 pb-4 border-b border-slate-100">
+            <div className="flex items-center gap-2.5">
+              <div className="p-2 rounded-lg bg-sky-50 text-sky-700">
+                <Package className="w-5 h-5" />
+              </div>
+              <div>
+                <h3 className="text-base font-bold text-slate-900 leading-tight">Charter Parameters & Voyage Configuration</h3>
+                <p className="text-xs text-slate-500">Configure parcel size, bunker price, and destination constraints</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-3">
+              {loading && (
+                <span className="text-xs font-mono text-amber-700 bg-amber-50 px-2.5 py-1 rounded-full border border-amber-200 flex items-center gap-1.5">
+                  <span className="w-1.5 h-1.5 rounded-full bg-amber-500 status-dot amber" /> Evaluating options...
+                </span>
+              )}
+              <button
+                type="button"
+                onClick={() => setCompareMode((v) => !v)}
+                aria-pressed={compareMode}
+                className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold border transition-all ${
+                  compareMode
+                    ? 'bg-slate-900 text-white border-slate-900 shadow-sm'
+                    : 'bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100'
+                }`}
+              >
+                <GitCompareArrows className="w-3.5 h-3.5" />
+                {compareMode ? 'Hide Port Comparison' : 'Compare Ports'}
+              </button>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+            <div className="bg-slate-50/70 p-3.5 rounded-xl border border-slate-100">
+              <label className="text-xs font-semibold text-slate-700 mb-1.5 block uppercase tracking-wider">Shipping Route</label>
               <select
                 value={selectedRouteId}
                 onChange={(e) => setSelectedRouteId(e.target.value)}
-                className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 text-slate-900 text-sm focus:outline-none focus:border-cyan-500/50 transition-colors"
+                className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-slate-900 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-sky-500/20 focus:border-sky-500 transition-colors shadow-2xs"
               >
                 {!routesList.length && <option value="">Loading routes...</option>}
                 {routesList.map((r) => (
                   <option key={r.id} value={r.id}>{r.originName} → {r.destinationName}</option>
                 ))}
               </select>
-              <p className="text-xs text-slate-400 mt-2 font-mono">
-                {selectedRoute ? `${Number(selectedRoute.nauticalMiles).toLocaleString()} NM | Base $${selectedRoute.baseFreightRate}/MT` : '—'}
-              </p>
+              <div className="flex items-center justify-between text-xs text-slate-500 mt-2 font-mono px-0.5">
+                <span>{selectedRoute ? `${Number(selectedRoute.nauticalMiles).toLocaleString()} NM` : '—'}</span>
+                <span>{selectedRoute ? `Base $${selectedRoute.baseFreightRate}/MT` : '—'}</span>
+              </div>
             </div>
-            <div>
-              <label className="text-sm text-slate-600 mb-2 block font-medium">Cargo Parcel Size (MT)</label>
-              <input
-                type="number"
-                value={cargoSize}
-                onChange={(e) => setCargoSize(Math.max(1000, Number(e.target.value) || 0))}
-                className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 text-slate-900 text-sm font-semibold num focus:outline-none focus:border-sky-500 transition-colors"
-              />
-              <p className="text-xs text-slate-500 mt-2">Recommended: 25,000 - 180,000 MT</p>
+
+            <div className="bg-slate-50/70 p-3.5 rounded-xl border border-slate-100">
+              <label className="text-xs font-semibold text-slate-700 mb-1.5 block uppercase tracking-wider">Cargo Parcel Size (MT)</label>
+              <div className="relative">
+                <input
+                  type="number"
+                  value={cargoSize}
+                  onChange={(e) => setCargoSize(Math.max(1000, Number(e.target.value) || 0))}
+                  className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-slate-900 text-sm font-semibold num focus:outline-none focus:ring-2 focus:ring-sky-500/20 focus:border-sky-500 transition-colors shadow-2xs"
+                />
+                <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-mono text-slate-400">MT</span>
+              </div>
+              <p className="text-xs text-slate-500 mt-2 px-0.5">Recommended: 25,000 – 180,000 MT</p>
             </div>
-            <div>
-              <label className="text-sm text-slate-600 mb-2 block font-medium">Bunker Fuel Price ($/MT)</label>
-              <input
-                type="number"
-                value={bunkerPrice}
-                onChange={(e) => setBunkerPrice(Math.max(100, Number(e.target.value) || 0))}
-                className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 text-slate-900 text-sm font-semibold num focus:outline-none focus:border-sky-500 transition-colors"
-              />
-              <p className="text-xs text-slate-500 mt-2">Current VLSFO market rate</p>
+
+            <div className="bg-slate-50/70 p-3.5 rounded-xl border border-slate-100">
+              <label className="text-xs font-semibold text-slate-700 mb-1.5 block uppercase tracking-wider">Bunker Fuel Price ($/MT)</label>
+              <div className="relative">
+                <input
+                  type="number"
+                  value={bunkerPrice}
+                  onChange={(e) => setBunkerPrice(Math.max(100, Number(e.target.value) || 0))}
+                  className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-slate-900 text-sm font-semibold num focus:outline-none focus:ring-2 focus:ring-sky-500/20 focus:border-sky-500 transition-colors shadow-2xs"
+                />
+                <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-mono text-slate-400">$/MT</span>
+              </div>
+              <p className="text-xs text-slate-500 mt-2 px-0.5">Current benchmark VLSFO market rate</p>
             </div>
           </div>
-          <button
-            type="button"
-            onClick={() => setCompareMode((v) => !v)}
-            aria-pressed={compareMode}
-            className={`mt-4 inline-flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-medium border transition-colors ${
-              compareMode
-                ? 'bg-slate-900 text-white border-slate-900'
-                : 'bg-white text-slate-600 border-slate-200 hover:border-slate-300'
-            }`}
-          >
-            <GitCompareArrows className="w-3.5 h-3.5" />
-            {compareMode ? 'Hide port comparison' : 'Compare all East Coast ports'}
-          </button>
 
           {result && (
-            <p className="text-xs font-mono mt-4 text-slate-500">
-              {result.optimization?.feasibleOptions}/{result.optimization?.totalOptionsEvaluated} vessel classes feasible
+            <div className="mt-4 pt-3 border-t border-slate-100 flex flex-wrap items-center justify-between text-xs text-slate-500 gap-2">
+              <div className="flex items-center gap-2 font-mono">
+                <span className="inline-block w-2 h-2 rounded-full bg-emerald-500" />
+                <span>{result.optimization?.feasibleOptions}/{result.optimization?.totalOptionsEvaluated} vessel classes feasible</span>
+              </div>
               {optimalEntry && (
-                <> | Market signal: <span className={optimalEntry.signal === 'LOCK NOW' ? 'text-rose-600' : optimalEntry.signal === 'WAIT' ? 'text-emerald-600' : 'text-sky-700'}>{optimalEntry.signal}</span></>
+                <div className="font-mono">
+                  Market signal:{' '}
+                  <span className={`font-bold px-2 py-0.5 rounded ${
+                    optimalEntry.signal === 'LOCK NOW'
+                      ? 'bg-rose-50 text-rose-700 border border-rose-200'
+                      : optimalEntry.signal === 'WAIT'
+                      ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
+                      : 'bg-sky-50 text-sky-700 border border-sky-200'
+                  }`}>
+                    {optimalEntry.signal}
+                  </span>
+                </div>
               )}
-            </p>
+            </div>
           )}
         </AnimatedCard>
       </ScrollReveal>
@@ -225,66 +258,82 @@ export default function CharterOptimizer() {
 
       {optimalEntry?.potentialSavingsPerMT > 0 && result?.optimization?.parcelSizeMT && (
         <ScrollReveal>
-          <div className="rounded-lg border border-emerald-200 bg-emerald-50 px-5 py-4 flex flex-wrap items-center gap-x-6 gap-y-2">
-            <div className="flex items-center gap-2">
-              <TrendingDown className="w-4 h-4 text-emerald-700" />
-              <span className="text-sm font-semibold text-emerald-900">
-                Timing value: ${Math.round(optimalEntry.potentialSavingsPerMT * result.optimization.parcelSizeMT).toLocaleString()}
-              </span>
+          <div className="rounded-xl border border-emerald-200 bg-emerald-50/80 p-4 shadow-xs flex flex-wrap items-center justify-between gap-4">
+            <div className="flex items-center gap-3">
+              <div className="p-2 rounded-lg bg-emerald-600 text-white shrink-0 shadow-2xs">
+                <TrendingDown className="w-5 h-5" />
+              </div>
+              <div>
+                <div className="text-sm font-bold text-emerald-950 flex items-center gap-2">
+                  <span>Optimization Timing Opportunity</span>
+                  <span className="text-xs font-mono font-bold bg-emerald-200 text-emerald-900 px-2 py-0.5 rounded-full">
+                    ${Math.round(optimalEntry.potentialSavingsPerMT * result.optimization.parcelSizeMT).toLocaleString()} Total Value
+                  </span>
+                </div>
+                <p className="text-xs text-emerald-800 mt-0.5">
+                  Save ${Number(optimalEntry.potentialSavingsPerMT).toFixed(2)}/MT on this {Number(result.optimization.parcelSizeMT).toLocaleString()} MT parcel by fixing in the recommended optimal booking window.
+                </p>
+              </div>
             </div>
-            <span className="text-xs text-emerald-700">
-              potential saving on this {Number(result.optimization.parcelSizeMT).toLocaleString()} MT parcel
-              (${Number(optimalEntry.potentialSavingsPerMT).toFixed(2)}/MT between best and worst projected window)
-            </span>
           </div>
         </ScrollReveal>
       )}
 
       {compareMode && portRanking && (
         <ScrollReveal>
-          <AnimatedCard className="overflow-visible">
-            <h3 className="text-lg font-bold text-slate-900 mb-1 flex items-center gap-2">
-              <GitCompareArrows className="w-5 h-5 text-sky-700" />
-              Best Port Finder — {Number(portRanking.parcelSizeMT).toLocaleString()} MT
-            </h3>
-            <p
-              className="text-xs text-slate-400 mb-4"
-              title="Wait days from historical congestion. Costs include hire, fuel and dues. Rows tagged ~est. use great-circle distance estimates at 14 kn where no direct route exists."
-            >
-              Ranked by best feasible cost/MT · wait days from historical congestion · costs include fuel + demurrage
-            </p>
+          <AnimatedCard className="overflow-visible border border-slate-200/80 shadow-sm bg-white">
+            <div className="flex flex-wrap items-center justify-between gap-2 mb-4 pb-3 border-b border-slate-100">
+              <div>
+                <h3 className="text-base font-bold text-slate-900 flex items-center gap-2">
+                  <GitCompareArrows className="w-4 h-4 text-sky-700" />
+                  Pareto Best Port Finder — {Number(portRanking.parcelSizeMT).toLocaleString()} MT
+                </h3>
+                <p className="text-xs text-slate-500 mt-0.5">
+                  Ranked by landed cost/MT across major East Coast terminals (includes ocean freight, fuel & estimated demurrage)
+                </p>
+              </div>
+            </div>
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead>
-                  <tr className="border-b border-slate-200">
-                    <th className="text-left text-xs font-mono text-slate-500 uppercase py-2.5 px-3">Port</th>
-                    <th className="text-left text-xs font-mono text-slate-500 uppercase py-2.5 px-3">Best Vessel</th>
-                    <th className="text-right text-xs font-mono text-slate-500 uppercase py-2.5 px-3">$/MT</th>
-                    <th className="text-right text-xs font-mono text-slate-500 uppercase py-2.5 px-3">Wait</th>
+                  <tr className="border-b border-slate-200 bg-slate-50/80">
+                    <th className="text-left text-xs font-mono font-semibold text-slate-600 uppercase tracking-wider py-2.5 px-3">Port</th>
+                    <th className="text-left text-xs font-mono font-semibold text-slate-600 uppercase tracking-wider py-2.5 px-3">Best Vessel</th>
+                    <th className="text-right text-xs font-mono font-semibold text-slate-600 uppercase tracking-wider py-2.5 px-3">$/MT</th>
+                    <th className="text-right text-xs font-mono font-semibold text-slate-600 uppercase tracking-wider py-2.5 px-3">Est. Wait</th>
                   </tr>
                 </thead>
-                <tbody>
+                <tbody className="divide-y divide-slate-100">
                   {portRanking.results.map((r, i) => (
                     <tr
                       key={r.portId}
-                      className={`border-b border-slate-100 ${i === 0 && r.feasible ? 'bg-emerald-100 border-l-4 border-l-emerald-500' : ''} ${!r.feasible ? 'opacity-45' : ''}`}
+                      className={`transition-colors ${
+                        i === 0 && r.feasible
+                          ? 'bg-emerald-50/80 font-medium'
+                          : 'hover:bg-slate-50/80'
+                      } ${!r.feasible ? 'opacity-50' : ''}`}
                     >
                       <td className="py-2.5 px-3">
-                        <span className="text-sm font-medium text-slate-900">{r.portName}</span>
-                        {r.estimated && (
-                          <span className="ml-2 text-[10px] font-mono px-1.5 py-0.5 rounded bg-slate-100 text-slate-500" title="Transit estimated via great-circle distance">~est.</span>
-                        )}
-                        {r.lighterage && (
-                          <span className="ml-1.5 text-[10px] font-mono px-1.5 py-0.5 rounded bg-amber-50 text-amber-700" title="Lighterage required">LGR</span>
-                        )}
+                        <div className="flex items-center gap-2">
+                          {i === 0 && r.feasible && (
+                            <span className="px-1.5 py-0.5 rounded bg-emerald-600 text-white font-mono text-[10px] font-bold">BEST</span>
+                          )}
+                          <span className="text-sm font-semibold text-slate-900">{r.portName}</span>
+                          {r.estimated && (
+                            <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-slate-100 text-slate-600 border border-slate-200" title="Transit estimated via great-circle distance">~est.</span>
+                          )}
+                          {r.lighterage && (
+                            <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-amber-100 text-amber-800 border border-amber-200" title="Lighterage required">LGR</span>
+                          )}
+                        </div>
                       </td>
                       <td className="py-2.5 px-3 text-sm font-medium text-slate-700">{r.bestVessel || '—'}</td>
                       <td className="py-2.5 px-3 text-right">
-                        <span className={`num text-sm font-bold ${i === 0 && r.feasible ? 'text-emerald-700' : 'text-slate-800'}`}>
+                        <span className={`num text-sm font-bold ${i === 0 && r.feasible ? 'text-emerald-700 text-base' : 'text-slate-800'}`}>
                           {r.costPerMT != null ? `$${Number(r.costPerMT).toFixed(2)}` : '—'}
                         </span>
                       </td>
-                      <td className="py-2.5 px-3 text-right num text-xs text-slate-600">{r.waitDays}d</td>
+                      <td className="py-2.5 px-3 text-right num text-xs font-semibold text-slate-600">{r.waitDays}d</td>
                     </tr>
                   ))}
                 </tbody>
@@ -294,8 +343,8 @@ export default function CharterOptimizer() {
         </ScrollReveal>
       )}
 
-      {/* Vessel Cards */}
-      <div className="grid lg:grid-cols-2 xl:grid-cols-4 gap-4">
+      {/* Vessel Cards (4-column responsive grid with aligned heights & metrics) */}
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-5 items-stretch">
         {vessels.map((vessel, idx) => {
           const dwt = dwtMap[vessel.vesselId]?.dwtRangeMax || dwtMap[vessel.vesselId]?.dwtTypical
           const costBreakdown = [
@@ -306,167 +355,190 @@ export default function CharterOptimizer() {
           ].filter((c) => c.value > 0)
 
           return (
-            <ScrollReveal key={`${vessel.class}-${idx}`} delay={idx * 0.08}>
+            <ScrollReveal key={`${vessel.class}-${idx}`} delay={idx * 0.08} className="flex">
               <motion.div
-                whileHover={{ y: -8 }}
-                className={`glass-card rounded-xl p-5 border-l-4 relative ${
-                  !vessel.feasible ? 'border-l-rose-500' :
-                  vessel.restricted ? 'border-l-amber-500' : 'border-l-emerald-500'
+                whileHover={{ y: -4 }}
+                className={`w-full flex flex-col justify-between rounded-xl p-5 border bg-white shadow-sm transition-all relative ${
+                  !vessel.feasible
+                    ? 'border-rose-200 bg-rose-50/20'
+                    : vessel.restricted
+                    ? 'border-amber-200'
+                    : vessel.isOptimal
+                    ? 'border-emerald-300 ring-2 ring-emerald-500/20 shadow-md'
+                    : 'border-slate-200'
                 }`}
               >
-                <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-lg font-bold text-slate-900">{vessel.class}</h3>
-                  {vessel.isOptimal && (
-                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-500 text-[10px] font-bold text-white">
-                      <Award className="w-3 h-3" /> OPTIMAL
-                    </span>
-                  )}
-                  <span className="text-xs font-mono text-slate-500">
-                    {vessel.tripsRequired > 1 ? `${vessel.tripsRequired} voyages` : dwt ? `${Number(dwt).toLocaleString()} DWT` : ''}
-                  </span>
-                </div>
-
-                <div className="mb-4">
-                  <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold border ${
-                    vessel.lighterage ? 'bg-amber-500/10 text-amber-600 border-amber-500/20' :
-                    !vessel.feasible ? 'bg-rose-500/10 text-rose-600 border-rose-500/20' :
-                    vessel.restricted ? 'bg-amber-500/10 text-amber-600 border-amber-500/20' :
-                    'bg-emerald-500/10 text-emerald-600 border-emerald-500/20'
-                  }`}>
-                    {vessel.lighterage ? <AlertTriangle className="w-3 h-3" /> :
-                     vessel.feasible ? <CheckCircle2 className="w-3 h-3" /> : <XCircle className="w-3 h-3" />}
-                    {vessel.lighterage ? 'Lighterage Required' : vessel.feasible ? (vessel.restricted ? 'Restricted' : 'Feasible') : 'Infeasible'}
-                  </span>
-                </div>
-
-                {!vessel.feasible && (vessel.constraints || []).length > 0 && (
-                  <p className="text-xs text-rose-600 mb-4 leading-relaxed">{vessel.constraints[0]}</p>
-                )}
-                {vessel.feasible && (vessel.warnings || []).length > 0 && (
-                  <p className="text-xs text-amber-700 mb-4 leading-relaxed">{vessel.warnings[0]}</p>
-                )}
-
-                {!vessel.feasible && (
-                  <div className="py-6 mb-2 text-center">
-                    <XCircle className="w-5 h-5 text-rose-400 mx-auto mb-1.5" />
-                    <p className="text-[10px] text-slate-500 font-mono uppercase tracking-wider">Not evaluated · constraints exceeded</p>
+                {/* Header Row */}
+                <div>
+                  <div className="flex items-center justify-between gap-2 pb-3 mb-3 border-b border-slate-100">
+                    <div className="flex items-center gap-2">
+                      <div className={`p-1.5 rounded-lg ${
+                        !vessel.feasible ? 'bg-rose-100 text-rose-700' :
+                        vessel.restricted ? 'bg-amber-100 text-amber-700' :
+                        'bg-sky-100 text-sky-700'
+                      }`}>
+                        <Ship className="w-4 h-4" />
+                      </div>
+                      <div>
+                        <h3 className="text-base font-bold text-slate-900 leading-tight">{vessel.class}</h3>
+                        <p className="text-[11px] font-mono text-slate-500">
+                          {vessel.tripsRequired > 1 ? `${vessel.tripsRequired} voyages` : dwt ? `${Number(dwt).toLocaleString()} DWT` : 'Standard'}
+                        </p>
+                      </div>
+                    </div>
+                    {vessel.isOptimal && (
+                      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-emerald-600 text-[10px] font-bold text-white shadow-xs">
+                        <Award className="w-3 h-3" /> OPTIMAL
+                      </span>
+                    )}
                   </div>
-                )}
 
-                {vessel.feasible && (
-                  <>
-                    <div className="space-y-3 mb-4">
-                      <div className="flex justify-between text-sm">
-                        <span className="text-slate-500">Capacity Utilization</span>
-                        <span className="font-mono text-slate-900">{vessel.utilization}%</span>
-                      </div>
-                      <div className="w-full h-2 bg-slate-100 rounded-full overflow-hidden border border-slate-200/60">
-                        <div
-                          className={`h-full rounded-full transition-all duration-700 ${
-                            vessel.utilization > 90 ? 'bg-emerald-500' :
-                            vessel.utilization > 70 ? 'bg-amber-500' : 'bg-rose-500'
-                          }`}
-                          style={{ width: `${Math.min(100, vessel.utilization)}%` }}
-                        />
-                      </div>
-                      <div className="flex justify-between text-sm">
-                        <span className="text-slate-500">Sea Days</span>
-                        <span className="font-mono text-slate-900">{vessel.seaDays}d</span>
-                      </div>
-                      <div className="flex justify-between text-sm">
-                        <span className="text-slate-500">Port Days</span>
-                        <span className="font-mono text-slate-900">{vessel.portDays}d</span>
-                      </div>
-                    </div>
+                  {/* Status Badge */}
+                  <div className="mb-3">
+                    <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-semibold border ${
+                      vessel.lighterage ? 'bg-amber-50 text-amber-800 border-amber-200' :
+                      !vessel.feasible ? 'bg-rose-50 text-rose-700 border-rose-200' :
+                      vessel.restricted ? 'bg-amber-50 text-amber-800 border-amber-200' :
+                      'bg-emerald-50 text-emerald-800 border-emerald-200'
+                    }`}>
+                      {vessel.lighterage ? <AlertTriangle className="w-3.5 h-3.5 text-amber-600" /> :
+                       vessel.feasible ? <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" /> : <XCircle className="w-3.5 h-3.5 text-rose-500" />}
+                      {vessel.lighterage ? 'Lighterage Required' : vessel.feasible ? (vessel.restricted ? 'Restricted Feasibility' : 'Fully Feasible') : 'Draft Infeasible'}
+                    </span>
+                  </div>
 
-                    <div className="mb-3 flex gap-1 h-1.5 rounded-full overflow-hidden bg-slate-100">
-                      {costBreakdown.map((seg, si) => {
-                        const total = costBreakdown.reduce((s, x) => s + x.value, 0) || 1
-                        const pct = (seg.value / total) * 100
-                        return <span key={si} style={{ width: `${pct}%`, background: COLORS[si % COLORS.length] }} title={`${seg.name}: $${Math.round(seg.value).toLocaleString()} (${pct.toFixed(0)}%)`} />
-                      })}
+                  {/* Warnings or Constraints Alert box */}
+                  <div className="min-h-[44px] mb-3">
+                    {!vessel.feasible && (vessel.constraints || []).length > 0 && (
+                      <p className="text-xs text-rose-700 bg-rose-50/80 border border-rose-100 p-2 rounded-lg leading-snug">
+                        {vessel.constraints[0]}
+                      </p>
+                    )}
+                    {vessel.feasible && (vessel.warnings || []).length > 0 && (
+                      <p className="text-xs text-amber-800 bg-amber-50/80 border border-amber-100 p-2 rounded-lg leading-snug">
+                        {vessel.warnings[0]}
+                      </p>
+                    )}
+                    {vessel.feasible && (!vessel.warnings || vessel.warnings.length === 0) && (
+                      <p className="text-xs text-slate-500 bg-slate-50 p-2 rounded-lg leading-snug">
+                        No draft or beam restrictions at berth.
+                      </p>
+                    )}
+                  </div>
+
+                  {!vessel.feasible && (
+                    <div className="py-12 text-center rounded-lg border border-dashed border-rose-200 bg-rose-50/30 my-4">
+                      <XCircle className="w-7 h-7 text-rose-400 mx-auto mb-2" />
+                      <p className="text-xs font-semibold text-rose-800">Terminal Incompatible</p>
+                      <p className="text-[10px] text-slate-500 font-mono mt-1">Exceeds port draft limits</p>
                     </div>
-                    <div className="h-32 mb-4">
-                      <ResponsiveContainer width="100%" height="100%">
-                        <PieChart>
-                          <Pie
-                            data={costBreakdown}
-                            cx="50%"
-                            cy="50%"
-                            innerRadius={40}
-                            outerRadius={62}
-                            paddingAngle={2}
-                            dataKey="value"
-                          >
-                            {costBreakdown.map((entry, index) => (
-                              <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                            ))}
-                          </Pie>
-                          <Tooltip
-                            contentStyle={{
-                              background: 'rgba(255,255,255,0.97)',
-                              border: '1px solid rgba(11,31,58,0.12)',
-                              borderRadius: '6px',
-                              fontSize: '11px',
-                            }}
-                            formatter={(value) => `$${value.toLocaleString()}`}
+                  )}
+
+                  {vessel.feasible && (
+                    <>
+                      {/* Utilization & Timeline */}
+                      <div className="space-y-2.5 mb-4 p-3 bg-slate-50/80 rounded-xl border border-slate-100">
+                        <div className="flex justify-between items-center text-xs">
+                          <span className="text-slate-600 font-medium">Capacity Utilization</span>
+                          <span className="font-mono font-bold text-slate-900">{vessel.utilization}%</span>
+                        </div>
+                        <div className="w-full h-2 bg-slate-200/70 rounded-full overflow-hidden">
+                          <div
+                            className={`h-full rounded-full transition-all duration-700 ${
+                              vessel.utilization > 90 ? 'bg-emerald-500' :
+                              vessel.utilization > 70 ? 'bg-amber-500' : 'bg-rose-500'
+                            }`}
+                            style={{ width: `${Math.min(100, vessel.utilization)}%` }}
                           />
-                        </PieChart>
-                      </ResponsiveContainer>
-                    </div>
+                        </div>
+                        <div className="grid grid-cols-2 gap-2 pt-1">
+                          <div className="text-xs">
+                            <span className="text-slate-500 block text-[10px] uppercase font-mono">Sea Days</span>
+                            <span className="font-mono font-semibold text-slate-800">{vessel.seaDays}d</span>
+                          </div>
+                          <div className="text-xs text-right">
+                            <span className="text-slate-500 block text-[10px] uppercase font-mono">Port Days</span>
+                            <span className="font-mono font-semibold text-slate-800">{vessel.portDays}d</span>
+                          </div>
+                        </div>
+                      </div>
 
-                    <div className="space-y-2 text-xs border-t border-slate-200 pt-3">
-                      <div className="flex justify-between">
-                        <span className="text-slate-500">Hire Cost</span>
-                        <span className="font-mono text-slate-700">${vessel.freightCost.toLocaleString()}</span>
+                      {/* Mini Donut Breakdown */}
+                      <div className="h-28 mb-3 relative flex items-center justify-center">
+                        <ResponsiveContainer width="100%" height="100%">
+                          <PieChart>
+                            <Pie
+                              data={costBreakdown}
+                              cx="50%"
+                              cy="50%"
+                              innerRadius={32}
+                              outerRadius={50}
+                              paddingAngle={2}
+                              dataKey="value"
+                            >
+                              {costBreakdown.map((entry, index) => (
+                                <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                              ))}
+                            </Pie>
+                            <Tooltip
+                              contentStyle={{
+                                background: 'rgba(255,255,255,0.98)',
+                                border: '1px solid rgba(11,31,58,0.12)',
+                                borderRadius: '6px',
+                                fontSize: '11px',
+                                boxShadow: '0 2px 8px rgba(0,0,0,0.08)'
+                              }}
+                              formatter={(value) => `$${value.toLocaleString()}`}
+                            />
+                          </PieChart>
+                        </ResponsiveContainer>
                       </div>
-                      <div className="flex justify-between">
-                        <span className="text-slate-500">Bunker Cost</span>
-                        <span className="font-mono text-slate-700">${vessel.bunkerCost.toLocaleString()}</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-slate-500">Port Dues</span>
-                        <span className="font-mono text-slate-700">${vessel.portDues.toLocaleString()}</span>
-                      </div>
-                      {vessel.demurrage > 0 && (
-                        <div className="flex justify-between">
-                          <span className="text-slate-500">Demurrage</span>
-                          <span className="font-mono text-rose-600">${vessel.demurrage.toLocaleString()}</span>
-                        </div>
-                      )}
-                      {vessel.lighterageCost > 0 && (
-                        <div className="flex justify-between">
-                          <span className="text-slate-500">Lighterage</span>
-                          <span className="font-mono text-amber-600">${vessel.lighterageCost.toLocaleString()}</span>
-                        </div>
-                      )}
-                    </div>
 
-                    <div className="mt-4 pt-3 border-t border-slate-200">
-                      <div className="flex justify-between items-center">
-                        <span className="text-sm text-slate-600">Total Voyage Cost</span>
-                        <span className="text-lg font-mono font-bold text-slate-900">${vessel.totalCost.toLocaleString()}</span>
-                      </div>
-                      <div className="flex justify-between items-center mt-1">
-                        <span className="text-xs text-slate-500">Effective Cost/MT</span>
-                        <span className={`text-sm font-mono font-bold ${
-                          vessel.costPerMt < 10 ? 'text-emerald-600' : 'text-rose-600'
-                        }`}>${Number(vessel.costPerMt).toFixed(2)}</span>
-                      </div>
-                      {vessel.dailyTCEquivalent != null && (
-                        <div className="flex justify-between items-center mt-1">
-                          <span className="text-xs text-slate-500">Daily TC Equivalent</span>
-                          <span className="text-xs font-mono text-slate-600">${Number(vessel.dailyTCEquivalent).toLocaleString()}/day</span>
+                      {/* Cost Line Items */}
+                      <div className="space-y-1.5 text-xs border-t border-slate-100 pt-3 mb-4">
+                        <div className="flex justify-between">
+                          <span className="text-slate-500">Hire Cost</span>
+                          <span className="font-mono font-medium text-slate-700">${vessel.freightCost.toLocaleString()}</span>
                         </div>
-                      )}
-                      {vessel.co2Tonnes != null && (
-                        <div className="flex justify-between items-center mt-1" title="Estimated laden voyage CO2e — IMO factor 3.114 t CO2 per tonne of VLSFO, sea days only (port/idle excluded)">
-                          <span className="text-xs text-slate-400">Voyage CO2e (est.)</span>
-                          <span className="text-xs font-mono text-slate-500">{vessel.co2Tonnes.toLocaleString()} t</span>
+                        <div className="flex justify-between">
+                          <span className="text-slate-500">Bunker Cost</span>
+                          <span className="font-mono font-medium text-slate-700">${vessel.bunkerCost.toLocaleString()}</span>
                         </div>
-                      )}
+                        <div className="flex justify-between">
+                          <span className="text-slate-500">Port Dues</span>
+                          <span className="font-mono font-medium text-slate-700">${vessel.portDues.toLocaleString()}</span>
+                        </div>
+                        {vessel.lighterageCost > 0 && (
+                          <div className="flex justify-between">
+                            <span className="text-amber-700 font-medium">Lighterage</span>
+                            <span className="font-mono font-medium text-amber-700">${vessel.lighterageCost.toLocaleString()}</span>
+                          </div>
+                        )}
+                      </div>
+                    </>
+                  )}
+                </div>
+
+                {/* Bottom Total Footer */}
+                {vessel.feasible && (
+                  <div className="pt-3 border-t border-slate-200 bg-slate-50/50 -mx-5 -mb-5 p-4 rounded-b-xl mt-auto">
+                    <div className="flex justify-between items-baseline mb-1">
+                      <span className="text-xs font-semibold text-slate-600 uppercase tracking-wider">Total Voyage</span>
+                      <span className="text-base font-mono font-bold text-slate-900">${vessel.totalCost.toLocaleString()}</span>
                     </div>
-                  </>
+                    <div className="flex justify-between items-baseline mb-2">
+                      <span className="text-xs font-medium text-slate-500">Effective $/MT</span>
+                      <span className={`text-sm font-mono font-bold ${
+                        vessel.costPerMt < 10 ? 'text-emerald-700' : 'text-slate-900'
+                      }`}>${Number(vessel.costPerMt).toFixed(2)}</span>
+                    </div>
+                    {vessel.dailyTCEquivalent != null && (
+                      <div className="flex justify-between items-center text-[11px] text-slate-500 pt-1 border-t border-slate-200/60 font-mono">
+                        <span>Daily TCE:</span>
+                        <span>${Number(vessel.dailyTCEquivalent).toLocaleString()}/d</span>
+                      </div>
+                    )}
+                  </div>
                 )}
               </motion.div>
             </ScrollReveal>
@@ -476,75 +548,85 @@ export default function CharterOptimizer() {
 
       {/* Laycan Advisory */}
       <ScrollReveal>
-        <AnimatedCard className="border-l-4 border-l-amber-500/50">
-          <h3 className="text-lg font-bold text-slate-900 mb-4 flex items-center gap-2">
-            <Clock className="w-5 h-5 text-amber-600" />
-            Laycan Timing & Idle Risk Advisory
+        <AnimatedCard className="border border-slate-200/80 shadow-sm bg-white">
+          <div className="flex flex-wrap items-center justify-between gap-3 mb-5 pb-3 border-b border-slate-100">
+            <div className="flex items-center gap-2.5">
+              <div className="p-2 rounded-lg bg-amber-50 text-amber-700">
+                <Clock className="w-5 h-5" />
+              </div>
+              <div>
+                <h3 className="text-base font-bold text-slate-900 leading-tight">Laycan Timing & Idle Risk Advisory</h3>
+                <p className="text-xs text-slate-500">Port congestion forecast and demurrage liability mitigation</p>
+              </div>
+            </div>
             {idleRisk && (
-              <span className={`ml-2 text-xs font-mono px-2 py-0.5 rounded-full border ${
-                idleRisk.riskLevel === 'HIGH' ? 'border-rose-500/30 text-rose-600 bg-rose-500/10' :
-                idleRisk.riskLevel === 'MEDIUM' ? 'border-amber-500/30 text-amber-600 bg-amber-500/10' :
-                'border-emerald-500/30 text-emerald-600 bg-emerald-500/10'
+              <span className={`text-xs font-mono font-bold px-3 py-1 rounded-full border ${
+                idleRisk.riskLevel === 'HIGH' ? 'border-rose-300 text-rose-800 bg-rose-50' :
+                idleRisk.riskLevel === 'MEDIUM' ? 'border-amber-300 text-amber-800 bg-amber-50' :
+                'border-emerald-300 text-emerald-800 bg-emerald-50'
               }`}>
                 Risk Score: {idleRisk.riskScore}/100 ({idleRisk.riskLevel})
               </span>
             )}
-          </h3>
+          </div>
+
           {result?.bookingAlignment && (
-            <div className={`mb-4 flex flex-wrap items-center gap-2 px-4 py-3 rounded-lg border ${
+            <div className={`mb-5 flex flex-wrap items-center justify-between gap-3 p-3.5 rounded-xl border ${
               result.bookingAlignment.within
-                ? 'bg-emerald-50 border-emerald-200'
-                : 'bg-amber-50 border-amber-200'
+                ? 'bg-emerald-50/80 border-emerald-200'
+                : 'bg-amber-50/80 border-amber-200'
             }`}>
-              {result.bookingAlignment.within ? (
-                <CheckCircle2 className="w-4 h-4 text-emerald-700" />
-              ) : (
-                <AlertTriangle className="w-4 h-4 text-amber-600" />
-              )}
-              <span className={`text-sm font-medium ${result.bookingAlignment.within ? 'text-emerald-800' : 'text-amber-800'}`}>
-                {result.bookingAlignment.within
-                  ? `Forecast trough (Day ${result.bookingAlignment.troughDay}) falls inside the laycan window — fix in this window`
-                  : `Forecast trough (Day ${result.bookingAlignment.troughDay}) falls outside laycan ${result.bookingAlignment.laycanStart}–${result.bookingAlignment.laycanEnd}d — timing trade-off`}
-              </span>
+              <div className="flex items-center gap-2.5">
+                {result.bookingAlignment.within ? (
+                  <CheckCircle2 className="w-4 h-4 text-emerald-700 shrink-0" />
+                ) : (
+                  <AlertTriangle className="w-4 h-4 text-amber-600 shrink-0" />
+                )}
+                <span className={`text-xs font-semibold ${result.bookingAlignment.within ? 'text-emerald-900' : 'text-amber-900'}`}>
+                  {result.bookingAlignment.within
+                    ? `Forecast trough (Day ${result.bookingAlignment.troughDay}) aligns with laycan window — fix in this window for optimal freight.`
+                    : `Forecast trough (Day ${result.bookingAlignment.troughDay}) falls outside laycan window ${result.bookingAlignment.laycanStart}–${result.bookingAlignment.laycanEnd}d — evaluate charter timing.`}
+                </span>
+              </div>
               {result.bookingAlignment.mlTargetDay != null && (
-                <span
-                  className="ml-auto text-[11px] font-mono text-slate-500"
-                  title={result.bookingAlignment.mlSource ? 'Per the LightGBM trajectory' : 'Per the fallback engine'}
-                >
-                  ML model trough: Day {result.bookingAlignment.mlTargetDay}
-                  {result.bookingAlignment.mlSource ? ' (LightGBM)' : ' (fallback)'}
+                <span className="text-[11px] font-mono text-slate-500 bg-white/80 px-2 py-0.5 rounded border border-slate-200/60">
+                  ML trough: Day {result.bookingAlignment.mlTargetDay} {result.bookingAlignment.mlSource ? '(LightGBM)' : '(fallback)'}
                 </span>
               )}
             </div>
           )}
-          <div className="grid md:grid-cols-3 gap-6">
-            <div className="p-4 rounded-lg bg-amber-500/5 border border-amber-500/10">
-              <p className="text-xs text-slate-500 mb-2">Recommended Laycan Window</p>
-              <p className="text-lg font-bold text-amber-600">{laycanText}</p>
-              <p className="text-xs text-slate-400 mt-1">{idleRisk?.laycanRecommendation?.note || 'Based on forecast trough & port availability'}</p>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+            <div className="p-4 rounded-xl bg-amber-50/60 border border-amber-200/70">
+              <p className="text-xs font-semibold text-amber-900 uppercase tracking-wider mb-1">Recommended Laycan Window</p>
+              <p className="text-xl font-bold font-mono text-amber-800">{laycanText}</p>
+              <p className="text-xs text-slate-600 mt-1.5">{idleRisk?.laycanRecommendation?.note || 'Based on forecast trough & port availability'}</p>
             </div>
-            <div className="p-4 rounded-lg bg-rose-500/5 border border-rose-500/10">
-              <p className="text-xs text-slate-500 mb-2">Demurrage Risk Level</p>
-              <p className="text-lg font-bold text-rose-600">{(idleRisk?.riskLevel || 'ELEVATED').toUpperCase()}</p>
-              <p className="text-xs text-slate-400 mt-1">
+
+            <div className="p-4 rounded-xl bg-rose-50/60 border border-rose-200/70">
+              <p className="text-xs font-semibold text-rose-900 uppercase tracking-wider mb-1">Demurrage Risk Level</p>
+              <p className="text-xl font-bold font-mono text-rose-700">{(idleRisk?.riskLevel || 'ELEVATED').toUpperCase()}</p>
+              <p className="text-xs text-slate-600 mt-1.5">
                 {idleRisk
-                  ? `${idleRisk.portName}: ${idleRisk.estimatedWaitingDays}d est. wait | Liability ~$${Number(idleRisk.demurrage?.estimatedLiability || 0).toLocaleString()}`
-                  : 'Waiting for engine...'}
+                  ? `${idleRisk.portName}: ${idleRisk.estimatedWaitingDays}d est. wait · Liability ~$${Number(idleRisk.demurrage?.estimatedLiability || 0).toLocaleString()}`
+                  : 'Awaiting engine evaluation...'}
               </p>
             </div>
-            <div className="p-4 rounded-lg bg-emerald-500/5 border border-emerald-500/10">
-              <p className="text-xs text-slate-500 mb-2">Despatch Earnings Potential</p>
-              <p className="text-lg font-bold text-emerald-600">
+
+            <div className="p-4 rounded-xl bg-emerald-50/60 border border-emerald-200/70">
+              <p className="text-xs font-semibold text-emerald-900 uppercase tracking-wider mb-1">Despatch Earnings Potential</p>
+              <p className="text-xl font-bold font-mono text-emerald-700">
                 ${Number(idleRisk?.despatch?.potentialEarnings || 0).toLocaleString()}
               </p>
-              <p className="text-xs text-slate-400 mt-1">
+              <p className="text-xs text-slate-600 mt-1.5">
                 Laytime {idleRisk?.demurrage?.allowedLaytime ?? '—'}d allowed vs {idleRisk?.demurrage?.dischargeDays ?? '—'}d discharge
               </p>
             </div>
           </div>
-          <div className="mt-4 p-4 rounded-lg bg-slate-50 border border-slate-200">
-            <p className="text-sm text-slate-700 leading-relaxed">
-              <span className="text-sky-700 font-semibold">Mitigation Strategy:</span> {mitigationText}
+
+          <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-200/70">
+            <p className="text-xs text-slate-700 leading-relaxed">
+              <span className="font-bold text-sky-800 uppercase tracking-wider mr-1">Mitigation Strategy:</span> {mitigationText}
             </p>
           </div>
         </AnimatedCard>

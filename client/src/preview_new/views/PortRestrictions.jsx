@@ -58,83 +58,104 @@ export default function PortRestrictions() {
 
       {/* Compliance Matrix dense */}
       <ScrollReveal>
-        <AnimatedCard className="overflow-hidden glass-card-dense">
-          <div className="flex flex-wrap items-center gap-3 mb-6">
-            <h2 className="text-xl font-bold text-slate-900 flex items-center gap-2">
-              <Ruler className="w-5 h-5 text-sky-700" />
-              Master Compliance Matrix
-              <span className="hidden sm:inline text-[10px] font-mono text-slate-400 font-normal">HS Handysize · SM Supramax · PM Panamax · CS Capesize</span>
-            </h2>
-            <div className="ml-auto relative">
-              <Search className="w-3.5 h-3.5 text-slate-400 absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
-              <input
-                type="text"
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-                placeholder="Filter ports or commodities..."
-                aria-label="Filter ports"
-                className="pl-8 pr-8 py-2 text-sm bg-white border border-slate-200 rounded-lg text-slate-800 focus:outline-none focus:ring-2 focus:ring-sky-500 w-full sm:w-64"
-              />
-              {query && (
-                <button
-                  type="button"
-                  onClick={() => setQuery('')}
-                  aria-label="Clear filter"
-                  className="absolute right-2 top-1/2 -translate-y-1/2 w-5 h-5 inline-flex items-center justify-center rounded text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors"
-                >
-                  <X className="w-3.5 h-3.5" />
-                </button>
-              )}
+        <AnimatedCard className="overflow-hidden border border-slate-200/80 shadow-sm bg-white p-0">
+          <div className="p-5 border-b border-slate-100 flex flex-wrap items-center justify-between gap-4">
+            <div className="flex items-center gap-2.5">
+              <div className="p-2 rounded-lg bg-sky-50 text-sky-700">
+                <Ruler className="w-5 h-5" />
+              </div>
+              <div>
+                <h2 className="text-base font-bold text-slate-900 leading-tight">
+                  Master Compliance Matrix
+                </h2>
+                <p className="text-xs text-slate-500">Draft, LOA, beam constraints, discharge rates and class permissions across terminals</p>
+              </div>
+            </div>
+            <div className="flex flex-wrap items-center gap-3">
+              <div className="relative">
+                <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+                <input
+                  type="text"
+                  value={query}
+                  onChange={(e) => setQuery(e.target.value)}
+                  placeholder="Filter ports or cargo types..."
+                  aria-label="Filter ports"
+                  className="pl-9 pr-8 py-1.5 text-xs bg-slate-50 border border-slate-200 rounded-lg text-slate-800 focus:outline-none focus:ring-2 focus:ring-sky-500/20 focus:border-sky-500 w-full sm:w-64 transition-colors"
+                />
+                {query && (
+                  <button
+                    type="button"
+                    onClick={() => setQuery('')}
+                    aria-label="Clear filter"
+                    className="absolute right-2 top-1/2 -translate-y-1/2 w-4 h-4 inline-flex items-center justify-center rounded text-slate-400 hover:text-slate-700 hover:bg-slate-200/60 transition-colors"
+                  >
+                    <X className="w-3.5 h-3.5" />
+                  </button>
+                )}
+              </div>
+              <span className="hidden lg:inline text-[11px] font-mono text-slate-500 bg-slate-50 border border-slate-200 px-2.5 py-1 rounded-md">
+                HS: Handysize · SM: Supramax · PM: Panamax · CS: Capesize
+              </span>
             </div>
           </div>
+
           <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead className="sticky top-0 z-10 bg-white">
-                <tr className="border-b border-slate-200 bg-slate-50/70">
-                  <th className="text-left text-xs font-mono text-slate-500 uppercase tracking-wider py-3 px-3">Port</th>
-                  <th className="text-right text-xs font-mono text-slate-500 uppercase tracking-wider py-3 px-3">Max Draft (m)</th>
-                  <th className="text-right text-xs font-mono text-slate-500 uppercase tracking-wider py-3 px-3">Max LOA (m)</th>
-                  <th className="text-right text-xs font-mono text-slate-500 uppercase tracking-wider py-3 px-3">Beam (m)</th>
-                  <th className="text-right text-xs font-mono text-slate-500 uppercase tracking-wider py-3 px-3">Berths</th>
-                  <th className="text-right text-xs font-mono text-slate-500 uppercase tracking-wider py-3 px-3">Discharge (MT/d)</th>
-                  <th className="text-right text-xs font-mono text-slate-500 uppercase tracking-wider py-3 px-3">Wait (d)</th>
-                  <th title="Handysize" className="text-center text-xs font-mono text-slate-500 uppercase tracking-wider py-3 px-2 cursor-help">HS</th>
-                  <th title="Supramax" className="text-center text-xs font-mono text-slate-500 uppercase tracking-wider py-3 px-2 cursor-help">SM</th>
-                  <th title="Panamax" className="text-center text-xs font-mono text-slate-500 uppercase tracking-wider py-3 px-2 cursor-help">PM</th>
-                  <th title="Capesize" className="text-center text-xs font-mono text-slate-500 uppercase tracking-wider py-3 px-2 cursor-help">CS</th>
+            <table className="w-full text-left border-collapse">
+              <thead className="sticky top-0 z-10 bg-slate-50 border-b border-slate-200 shadow-2xs">
+                <tr>
+                  <th className="py-3 px-4 text-xs font-mono font-bold text-slate-700 uppercase tracking-wider min-w-[150px]">Port Terminal</th>
+                  <th className="py-3 px-3 text-right text-xs font-mono font-bold text-slate-700 uppercase tracking-wider">Max Draft</th>
+                  <th className="py-3 px-3 text-right text-xs font-mono font-bold text-slate-700 uppercase tracking-wider">Max LOA</th>
+                  <th className="py-3 px-3 text-right text-xs font-mono font-bold text-slate-700 uppercase tracking-wider">Max Beam</th>
+                  <th className="py-3 px-3 text-right text-xs font-mono font-bold text-slate-700 uppercase tracking-wider">Berths</th>
+                  <th className="py-3 px-3 text-right text-xs font-mono font-bold text-slate-700 uppercase tracking-wider">Discharge</th>
+                  <th className="py-3 px-3 text-right text-xs font-mono font-bold text-slate-700 uppercase tracking-wider">Est. Wait</th>
+                  <th title="Handysize Feasibility" className="py-3 px-2 text-center text-xs font-mono font-bold text-slate-700 uppercase tracking-wider w-12 cursor-help">HS</th>
+                  <th title="Supramax Feasibility" className="py-3 px-2 text-center text-xs font-mono font-bold text-slate-700 uppercase tracking-wider w-12 cursor-help">SM</th>
+                  <th title="Panamax Feasibility" className="py-3 px-2 text-center text-xs font-mono font-bold text-slate-700 uppercase tracking-wider w-12 cursor-help">PM</th>
+                  <th title="Capesize Feasibility" className="py-3 px-2 text-center text-xs font-mono font-bold text-slate-700 uppercase tracking-wider w-12 cursor-help">CS</th>
                 </tr>
               </thead>
-              <tbody>
+              <tbody className="divide-y divide-slate-100 bg-white">
                 {matrix.filter((p) => !query || p.port.toLowerCase().includes(query.toLowerCase()) || (p.commodities || []).some((c) => String(c).toLowerCase().includes(query.toLowerCase()))).map((port, idx) => (
                   <motion.tr
                     key={port.port}
                     initial={{ y: 6 }}
                     animate={{ y: 0 }}
-                                transition={{ delay: idx * 0.05 }}
-                    className="border-b border-slate-200 even:bg-slate-50/70 hover:bg-slate-50 transition-colors"
+                    transition={{ delay: idx * 0.04 }}
+                    className="hover:bg-slate-50/80 transition-colors"
                   >
-                    <td className="py-3 px-3">
+                    <td className="py-3.5 px-4">
                       <div className="flex items-center gap-2">
-                        <Anchor className="w-4 h-4 text-sky-700" />
-                        <span className="text-sm font-medium text-slate-900">{port.port}</span>
+                        <div className="p-1 rounded bg-slate-100 text-sky-700">
+                          <Anchor className="w-3.5 h-3.5" />
+                        </div>
+                        <div>
+                          <span className="text-sm font-bold text-slate-900 block leading-tight">{port.port}</span>
+                          <span className="text-[10px] font-mono text-slate-400">{port.state}</span>
+                        </div>
                       </div>
                     </td>
-                    <td className="py-3 px-3 text-right font-mono text-sm text-slate-900">{port.maxDraft}</td>
-                    <td className="py-3 px-3 text-right font-mono text-sm text-slate-900">{port.maxLOA}</td>
-                    <td className="py-3 px-3 text-right font-mono text-sm text-slate-900">{port.maxBeam}</td>
-                    <td className="py-3 px-3 text-right font-mono text-sm text-slate-900">{port.berths}</td>
-                    <td className="py-3 px-3 text-right font-mono text-sm text-sky-700">{Number(port.dischargeRate).toLocaleString()}</td>
-                    <td className="py-3 px-3 text-right">
-                      <span className={`font-mono text-sm ${port.waitingDays > 4 ? 'text-rose-600' : port.waitingDays > 2 ? 'text-amber-600' : 'text-emerald-600'}`}>
-                        {port.waitingDays}
+                    <td className="py-3.5 px-3 text-right font-mono text-sm font-semibold text-slate-800">{port.maxDraft}m</td>
+                    <td className="py-3.5 px-3 text-right font-mono text-sm text-slate-700">{port.maxLOA}m</td>
+                    <td className="py-3.5 px-3 text-right font-mono text-sm text-slate-700">{port.maxBeam}m</td>
+                    <td className="py-3.5 px-3 text-right font-mono text-sm text-slate-700">{port.berths}</td>
+                    <td className="py-3.5 px-3 text-right font-mono text-sm font-semibold text-sky-700">{Number(port.dischargeRate).toLocaleString()} <span className="text-[10px] font-normal text-slate-400">t/d</span></td>
+                    <td className="py-3.5 px-3 text-right">
+                      <span className={`font-mono text-xs font-bold px-2 py-0.5 rounded ${
+                        port.waitingDays > 4 ? 'bg-rose-50 text-rose-700 border border-rose-200' :
+                        port.waitingDays > 2 ? 'bg-amber-50 text-amber-700 border border-amber-200' :
+                        'bg-emerald-50 text-emerald-700 border border-emerald-200'
+                      }`}>
+                        {port.waitingDays}d
                       </span>
                     </td>
                     {['handysize', 'supramax', 'panamax', 'capesize'].map((cls) => (
-                      <td key={cls} className="py-3 px-2 text-center">
+                      <td key={cls} className="py-3.5 px-2 text-center">
                         {port[cls] ? (
                           <CheckCircle2 className="w-4 h-4 text-emerald-600 mx-auto" />
                         ) : (
-                          <XCircle className="w-4 h-4 text-rose-600/50 mx-auto" />
+                          <XCircle className="w-4 h-4 text-rose-400 mx-auto" />
                         )}
                       </td>
                     ))}
@@ -147,90 +168,94 @@ export default function PortRestrictions() {
       </ScrollReveal>
 
       {/* Terminal Cards */}
-      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 items-stretch">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 items-stretch">
         {matrix.filter((p) => !query || p.port.toLowerCase().includes(query.toLowerCase()) || (p.commodities || []).some((c) => String(c).toLowerCase().includes(query.toLowerCase()))).map((port, idx) => (
-          <ScrollReveal key={port.port} delay={idx * 0.08}>
+          <ScrollReveal key={port.port} delay={idx * 0.06} className="flex">
             <motion.div
-              whileHover={{ y: -6 }}
-              className="glass-card rounded-xl p-5 glass-card-hover"
+              whileHover={{ y: -4 }}
+              className="w-full flex flex-col justify-between rounded-xl p-5 border border-slate-200/80 bg-white shadow-sm hover:border-sky-500/30 transition-all"
             >
-              <div className="flex items-center justify-between mb-4">
-                <div>
-                  <h3 className="text-lg font-bold text-slate-900 leading-tight">{port.port}</h3>
-                  <p className="text-[10px] text-slate-400 font-mono mt-0.5">
-                    {port.state}{port.capacityMTPA ? ` | ${port.capacityMTPA} MTPA` : ''}
-                  </p>
-                </div>
-                <div className="flex gap-1 flex-wrap justify-end max-w-[55%]">
-                  {(port.commodities || []).slice(0, 3).map((c, i) => (
-                    <span key={i} className="text-[10px] px-1.5 py-0.5 rounded bg-white/5 text-slate-500 font-mono">
-                      {String(c).split(' ')[0]}
-                    </span>
-                  ))}
-                </div>
-              </div>
-
-              <div className="grid grid-cols-2 gap-3 mb-4">
-                <div className="p-2.5 rounded-lg bg-slate-50 border border-slate-200">
-                  <div className="flex items-center gap-1.5 mb-1">
-                    <Ruler className="w-3 h-3 text-slate-500" />
-                    <span className="text-[10px] text-slate-500">Draft</span>
+              <div>
+                <div className="flex items-start justify-between gap-2 mb-4 pb-3 border-b border-slate-100">
+                  <div>
+                    <h3 className="text-base font-bold text-slate-900 leading-tight">{port.port}</h3>
+                    <p className="text-[11px] text-slate-500 font-mono mt-0.5">
+                      {port.state}{port.capacityMTPA ? ` · ${port.capacityMTPA} MTPA` : ''}
+                    </p>
                   </div>
-                  <p className="text-sm font-mono text-slate-900">{port.maxDraft}m</p>
-                </div>
-                <div className="p-2.5 rounded-lg bg-slate-50 border border-slate-200">
-                  <div className="flex items-center gap-1.5 mb-1">
-                    <Ship className="w-3 h-3 text-slate-500" />
-                    <span className="text-[10px] text-slate-500">LOA</span>
-                  </div>
-                  <p className="text-sm font-mono text-slate-900">{port.maxLOA}m</p>
-                </div>
-                <div className="p-2.5 rounded-lg bg-slate-50 border border-slate-200">
-                  <div className="flex items-center gap-1.5 mb-1">
-                    <Waves className="w-3 h-3 text-slate-500" />
-                    <span className="text-[10px] text-slate-500">Tidal Range</span>
-                  </div>
-                  <p className="text-sm font-mono text-slate-900">{port.tidalRange}m</p>
-                </div>
-                <div className="p-2.5 rounded-lg bg-slate-50 border border-slate-200">
-                  <div className="flex items-center gap-1.5 mb-1">
-                    <Moon className="w-3 h-3 text-slate-500" />
-                    <span className="text-[10px] text-slate-500">Night Nav</span>
-                  </div>
-                  <p className="text-sm font-mono text-slate-900">{port.nightNav ? 'Permitted' : 'Restricted'}</p>
-                </div>
-              </div>
-
-              <div className="border-t border-slate-200 pt-3">
-                <p className="text-[10px] text-slate-500 mb-2">VESSEL COMPATIBILITY</p>
-                <div className="flex gap-2">
-                  {['Handysize', 'Supramax', 'Panamax', 'Capesize'].map((cls) => {
-                    const compatible = port[cls.toLowerCase()]
-                    return (
-                      <span
-                        key={cls}
-                        title={compatible ? `${cls} compatible` : `${cls} not permitted`}
-                        className={`text-[10px] px-2 py-1 rounded-full border font-medium ${
-                          compatible
-                            ? 'bg-emerald-500/10 text-emerald-600 border-emerald-500/20'
-                            : 'bg-rose-500/10 text-rose-600/50 border-rose-500/10'
-                        }`}
-                      >
-                        {cls.slice(0, 2).toUpperCase()}
+                  <div className="flex gap-1 flex-wrap justify-end max-w-[50%]">
+                    {(port.commodities || []).slice(0, 3).map((c, i) => (
+                      <span key={i} className="text-[10px] px-2 py-0.5 rounded bg-slate-50 border border-slate-200 text-slate-600 font-mono">
+                        {String(c).split(' ')[0]}
                       </span>
-                    )
-                  })}
+                    ))}
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-2.5 mb-4">
+                  <div className="p-2.5 rounded-lg bg-slate-50/80 border border-slate-100">
+                    <div className="flex items-center gap-1.5 mb-1">
+                      <Ruler className="w-3.5 h-3.5 text-sky-700" />
+                      <span className="text-[10px] uppercase font-mono font-semibold text-slate-500">Max Draft</span>
+                    </div>
+                    <p className="text-sm font-mono font-bold text-slate-900">{port.maxDraft}m</p>
+                  </div>
+                  <div className="p-2.5 rounded-lg bg-slate-50/80 border border-slate-100">
+                    <div className="flex items-center gap-1.5 mb-1">
+                      <Ship className="w-3.5 h-3.5 text-sky-700" />
+                      <span className="text-[10px] uppercase font-mono font-semibold text-slate-500">Max LOA</span>
+                    </div>
+                    <p className="text-sm font-mono font-bold text-slate-900">{port.maxLOA}m</p>
+                  </div>
+                  <div className="p-2.5 rounded-lg bg-slate-50/80 border border-slate-100">
+                    <div className="flex items-center gap-1.5 mb-1">
+                      <Waves className="w-3.5 h-3.5 text-sky-700" />
+                      <span className="text-[10px] uppercase font-mono font-semibold text-slate-500">Tidal Range</span>
+                    </div>
+                    <p className="text-sm font-mono font-bold text-slate-900">{port.tidalRange}m</p>
+                  </div>
+                  <div className="p-2.5 rounded-lg bg-slate-50/80 border border-slate-100">
+                    <div className="flex items-center gap-1.5 mb-1">
+                      <Moon className="w-3.5 h-3.5 text-sky-700" />
+                      <span className="text-[10px] uppercase font-mono font-semibold text-slate-500">Night Nav</span>
+                    </div>
+                    <p className="text-sm font-mono font-bold text-slate-900">{port.nightNav ? 'Permitted' : 'Restricted'}</p>
+                  </div>
                 </div>
               </div>
 
-              {port.lighterage && (
-                <div className="mt-3 p-2 rounded bg-amber-500/5 border border-amber-500/10 flex items-start gap-2">
-                  <AlertTriangle className="w-3 h-3 text-amber-600 shrink-0 mt-0.5" />
-                  <span className="text-[10px] text-amber-600 leading-relaxed">
-                    Lighterage required{port.lighterageCost ? ` (+$${port.lighterageCost}/MT)` : ''} — {port.lighterageNote || 'barge transfer at anchorage'}
-                  </span>
+              <div>
+                <div className="border-t border-slate-100 pt-3">
+                  <p className="text-[10px] uppercase font-mono font-semibold text-slate-500 mb-2">Vessel Feasibility Permissions</p>
+                  <div className="grid grid-cols-4 gap-1.5 text-center">
+                    {['Handysize', 'Supramax', 'Panamax', 'Capesize'].map((cls) => {
+                      const compatible = port[cls.toLowerCase()]
+                      return (
+                        <span
+                          key={cls}
+                          title={compatible ? `${cls} fully compatible` : `${cls} draft restricted`}
+                          className={`text-[10px] py-1 rounded-md border font-semibold font-mono ${
+                            compatible
+                              ? 'bg-emerald-50 text-emerald-800 border-emerald-200'
+                              : 'bg-rose-50 text-rose-600 border-rose-200'
+                          }`}
+                        >
+                          {cls.slice(0, 2).toUpperCase()}
+                        </span>
+                      )
+                    })}
+                  </div>
                 </div>
-              )}
+
+                {port.lighterage && (
+                  <div className="mt-3 p-2.5 rounded-lg bg-amber-50 border border-amber-200 flex items-start gap-2">
+                    <AlertTriangle className="w-3.5 h-3.5 text-amber-700 shrink-0 mt-0.5" />
+                    <span className="text-[11px] text-amber-800 leading-snug">
+                      <strong className="font-semibold">Lighterage Required</strong>{port.lighterageCost ? ` (+$${port.lighterageCost}/MT)` : ''} — {port.lighterageNote || 'Sandheads lighterage'}
+                    </span>
+                  </div>
+                )}
+              </div>
             </motion.div>
           </ScrollReveal>
         ))}
