@@ -807,10 +807,10 @@ export default function FreightForecaster() {
                       formatter={(v) => `$${Number(v).toLocaleString('en-US', { maximumFractionDigits: 0 })}`}
                     />
                     <Bar dataKey="total" radius={[4, 4, 0, 0]}>
-                      {tcComparison.map((c, i) => {
+                      {tcComparison.map((c) => {
                         const total = c.rate * parcelMT
                         const isMin = total === Math.min(...tcComparison.map(x => x.rate * parcelMT))
-                        return <Cell key={i} fill={isMin ? '#10b981' : '#0284c7'} />
+                        return <Cell key={c.type} fill={isMin ? '#10b981' : '#0284c7'} />
                       })}
                       <LabelList dataKey="total" position="top" style={{ fontSize: 10, fontFamily: 'JetBrains Mono', fill: '#475569', fontWeight: 'bold' }} formatter={(v) => `$${(v / 1_000_000).toFixed(2)}M`} />
                     </Bar>

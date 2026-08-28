@@ -236,7 +236,7 @@ export default function Home({ onNavigate, user, onLoginSuccess }) {
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2.5">
                           <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-sky-700 to-teal-600 text-white font-bold text-sm flex items-center justify-center shadow-md">
-                            {currentUser.name ? currentUser.name.split(' ').map(p => p[0]).join('').slice(0, 2) : 'U'}
+                            {currentUser.name ? currentUser.name.split(' ').filter(Boolean).map(p => p[0]).join('').slice(0, 2) : 'U'}
                           </div>
                           <div>
                             <h2 className="text-base font-bold text-slate-900 leading-tight">{currentUser.name}</h2>

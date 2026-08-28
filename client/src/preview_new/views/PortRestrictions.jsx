@@ -117,50 +117,62 @@ export default function PortRestrictions() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100 bg-white">
-                {matrix.filter((p) => !query || p.port.toLowerCase().includes(query.toLowerCase()) || (p.commodities || []).some((c) => String(c).toLowerCase().includes(query.toLowerCase()))).map((port, idx) => (
-                  <motion.tr
-                    key={port.port}
-                    initial={{ y: 6 }}
-                    animate={{ y: 0 }}
-                    transition={{ delay: idx * 0.04 }}
-                    className="hover:bg-slate-50/80 transition-colors"
-                  >
-                    <td className="py-3.5 px-4">
-                      <div className="flex items-center gap-2">
-                        <div className="p-1 rounded bg-slate-100 text-sky-700">
-                          <Anchor className="w-3.5 h-3.5" />
+                {(() => {
+                  const filtered = matrix.filter((p) => !query || p.port.toLowerCase().includes(query.toLowerCase()) || (p.commodities || []).some((c) => String(c).toLowerCase().includes(query.toLowerCase())))
+                  if (filtered.length === 0) {
+                    return (
+                      <tr>
+                        <td colSpan={11} className="py-8 text-center text-sm text-slate-500 font-medium">
+                          No ports or commodities matching "{query}". Try a different search term.
+                        </td>
+                      </tr>
+                    )
+                  }
+                  return filtered.map((port, idx) => (
+                    <motion.tr
+                      key={port.port}
+                      initial={{ y: 6 }}
+                      animate={{ y: 0 }}
+                      transition={{ delay: idx * 0.04 }}
+                      className="hover:bg-slate-50/80 transition-colors"
+                    >
+                      <td className="py-3.5 px-4">
+                        <div className="flex items-center gap-2">
+                          <div className="p-1 rounded bg-slate-100 text-sky-700">
+                            <Anchor className="w-3.5 h-3.5" />
+                          </div>
+                          <div>
+                            <span className="text-sm font-bold text-slate-900 block leading-tight">{port.port}</span>
+                            <span className="text-[10px] font-mono text-slate-500">{port.state}</span>
+                          </div>
                         </div>
-                        <div>
-                          <span className="text-sm font-bold text-slate-900 block leading-tight">{port.port}</span>
-                          <span className="text-[10px] font-mono text-slate-500">{port.state}</span>
-                        </div>
-                      </div>
-                    </td>
-                    <td className="py-3.5 px-3 text-right font-mono text-sm font-semibold text-slate-800">{port.maxDraft}m</td>
-                    <td className="py-3.5 px-3 text-right font-mono text-sm text-slate-700">{port.maxLOA}m</td>
-                    <td className="py-3.5 px-3 text-right font-mono text-sm text-slate-700">{port.maxBeam}m</td>
-                    <td className="py-3.5 px-3 text-right font-mono text-sm text-slate-700">{port.berths}</td>
-                    <td className="py-3.5 px-3 text-right font-mono text-sm font-semibold text-sky-700">{Number(port.dischargeRate).toLocaleString()} <span className="text-[10px] font-normal text-slate-500">t/d</span></td>
-                    <td className="py-3.5 px-3 text-right">
-                      <span className={`font-mono text-xs font-bold px-2 py-0.5 rounded ${
-                        port.waitingDays > 4 ? 'bg-rose-50 text-rose-700 border border-rose-200' :
-                        port.waitingDays > 2 ? 'bg-amber-50 text-amber-700 border border-amber-200' :
-                        'bg-emerald-50 text-emerald-700 border border-emerald-200'
-                      }`}>
-                        {port.waitingDays}d
-                      </span>
-                    </td>
-                    {['handysize', 'supramax', 'panamax', 'capesize'].map((cls) => (
-                      <td key={cls} className="py-3.5 px-2 text-center">
-                        {port[cls] ? (
-                          <CheckCircle2 className="w-4 h-4 text-emerald-600 mx-auto" />
-                        ) : (
-                          <XCircle className="w-4 h-4 text-rose-600 mx-auto" />
-                        )}
                       </td>
-                    ))}
-                  </motion.tr>
-                ))}
+                      <td className="py-3.5 px-3 text-right font-mono text-sm font-semibold text-slate-800">{port.maxDraft}m</td>
+                      <td className="py-3.5 px-3 text-right font-mono text-sm text-slate-700">{port.maxLOA}m</td>
+                      <td className="py-3.5 px-3 text-right font-mono text-sm text-slate-700">{port.maxBeam}m</td>
+                      <td className="py-3.5 px-3 text-right font-mono text-sm text-slate-700">{port.berths}</td>
+                      <td className="py-3.5 px-3 text-right font-mono text-sm font-semibold text-sky-700">{Number(port.dischargeRate).toLocaleString()} <span className="text-[10px] font-normal text-slate-500">t/d</span></td>
+                      <td className="py-3.5 px-3 text-right">
+                        <span className={`font-mono text-xs font-bold px-2 py-0.5 rounded ${
+                          port.waitingDays > 4 ? 'bg-rose-50 text-rose-700 border border-rose-200' :
+                          port.waitingDays > 2 ? 'bg-amber-50 text-amber-700 border border-amber-200' :
+                          'bg-emerald-50 text-emerald-700 border border-emerald-200'
+                        }`}>
+                          {port.waitingDays}d
+                        </span>
+                      </td>
+                      {['handysize', 'supramax', 'panamax', 'capesize'].map((cls) => (
+                        <td key={cls} className="py-3.5 px-2 text-center">
+                          {port[cls] ? (
+                            <CheckCircle2 className="w-4 h-4 text-emerald-600 mx-auto" />
+                          ) : (
+                            <XCircle className="w-4 h-4 text-rose-600 mx-auto" />
+                          )}
+                        </td>
+                      ))}
+                    </motion.tr>
+                  ))
+                })()}
               </tbody>
             </table>
           </div>

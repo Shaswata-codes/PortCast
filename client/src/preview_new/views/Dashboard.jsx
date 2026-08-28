@@ -303,7 +303,7 @@ export default function Dashboard() {
               <tbody className="divide-y divide-slate-100 bg-white">
                 {routeProjections.map((route, idx) => (
                   <motion.tr
-                    key={idx}
+                    key={route.routeId || `${route.origin}-${route.destination}`}
                     initial={{ y: 6 }}
                     animate={{ y: 0 }}
                     transition={{ delay: idx * 0.04 }}

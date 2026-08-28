@@ -117,9 +117,13 @@ export default function RiskRadar() {
           <h1 className="text-3xl lg:text-4xl font-extrabold text-slate-900 tracking-tight">Risk Radar & <span className="text-gradient">Stress Simulator</span></h1>
           <p className="text-slate-600 max-w-2xl mt-3">Scenario modeling for bunker shocks, congestion, demand shifts and chokepoint closures — quantify exposure before you fix.</p>
           <div className="mt-4 flex flex-wrap gap-2">
-            <a href="#stress-simulator" className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-semibold bg-sky-50 text-sky-700 border border-sky-200 hover:bg-sky-100 transition-colors">
+            <button
+              type="button"
+              onClick={() => document.getElementById('stress-simulator')?.scrollIntoView({ behavior: 'smooth' })}
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-semibold bg-sky-50 text-sky-700 border border-sky-200 hover:bg-sky-100 transition-colors"
+            >
               <Activity className="w-3.5 h-3.5" /> Jump to Simulator
-            </a>
+            </button>
             <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-semibold bg-slate-50 text-slate-600 border border-slate-200">
               <ShieldAlert className="w-3.5 h-3.5 text-rose-500" /> {alerts.length} active alerts
             </span>
