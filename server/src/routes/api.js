@@ -46,7 +46,6 @@ router.get('/risk', getRiskAlerts);
 router.post('/simulate', runSimulation);
 router.post('/explain', getExplanation);
 
-// User routes (auth)
 router.use('/users', userRoutes);
 
 export default router;
