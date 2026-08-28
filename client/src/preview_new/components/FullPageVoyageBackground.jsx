@@ -140,12 +140,13 @@ export default function FullPageVoyageBackground() {
           loop
           muted
           playsInline
-          className="absolute inset-0 w-full h-full object-cover opacity-90"
+          className="absolute inset-0 w-full h-full object-cover opacity-80"
           src="/keyframes/hero_voyage_clean.mp4"
         />
       )}
 
-      {/* No page wash on Home — full-bleed image, scrim only behind h1 pill (Home.jsx white/72) */}
+      {/* Subtle enterprise daylight scrim for crisp foreground legibility */}
+      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#f2f6fb]/[0.08] to-[#f2f6fb]/[0.35] pointer-events-none" />
     </div>
   )
 }
