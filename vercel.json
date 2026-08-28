@@ -17,18 +17,18 @@
       }
     }
   ],
-  "routes": [
+  "rewrites": [
     {
-      "src": "/api/ml/(.*)",
-      "dest": "/ml/service.py"
+      "source": "/api/ml/(.*)",
+      "destination": "/ml/service.py"
     },
     {
-      "src": "/api/(.*)",
-      "dest": "/server/src/app.js"
+      "source": "/api/(.*)",
+      "destination": "/server/src/app.js"
     },
     {
-      "src": "/(.*)",
-      "dest": "/client/dist/$1"
+      "source": "/(.*)",
+      "destination": "/client/dist/$1"
     }
   ]
 }
