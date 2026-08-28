@@ -48,7 +48,7 @@ export default function ExplainabilityPanel({ routeId, baseRate }) {
       <div className="flex items-center gap-2">
         <Sparkles className="w-4 h-4 text-sky-700" />
         <h3 className="text-sm font-bold text-slate-900">Why this forecast?</h3>
-        <span className="text-[10px] font-mono text-slate-400 ml-auto uppercase tracking-wider">SHAP-lite · LightGBM gain</span>
+        <span className="text-[10px] font-mono text-slate-500 ml-auto uppercase tracking-wider font-medium">SHAP-lite · LightGBM gain</span>
       </div>
 
       <div className="space-y-2.5">

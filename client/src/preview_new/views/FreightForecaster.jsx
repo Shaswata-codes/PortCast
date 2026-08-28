@@ -14,7 +14,7 @@ import { fetchRoutes, fetchForecast, fetchPorts, fetchRisk, lastError, invalidat
 import { takeDeepLinkRouteId } from '../services/routeStore'
 
 const fallbackSignalColors = {
-  HOLD: 'bg-violet-500/10 text-violet-700 border-violet-300',
+  HOLD: 'bg-sky-50 text-sky-700 border-sky-200',
 }
 
 function buildChartData(forecast, mlEngine) {
@@ -303,7 +303,7 @@ export default function FreightForecaster() {
                     }`}
                   >
                     <span className="truncate pr-2">{route.label}</span>
-                    <span className="text-[10px] text-slate-400 font-mono shrink-0">{route.commodity}</span>
+                    <span className="text-[10px] text-slate-500 font-mono shrink-0">{route.commodity}</span>
                   </button>
                 ))}
               </div>
@@ -355,28 +355,28 @@ export default function FreightForecaster() {
                 <div className="p-3 rounded-xl bg-white border border-slate-200 shadow-xs">
                   <p className="text-[11px] font-semibold uppercase tracking-wider text-slate-500 mb-0.5">Model</p>
                   <p className="text-sm font-extrabold text-slate-900 truncate">{modelPerformance.modelType}</p>
-                  <p className="text-[10px] font-mono text-slate-400 mt-0.5">R² {modelPerformance.r2}</p>
+                  <p className="text-[10px] font-mono text-slate-500 mt-0.5">R² {modelPerformance.r2}</p>
                 </div>
                 <div className="p-3 rounded-xl bg-white border border-slate-200 shadow-xs">
                   <p className="text-[11px] font-semibold uppercase tracking-wider text-slate-500 mb-0.5">Current Spot</p>
                   <p className="text-base font-extrabold text-sky-700 num font-mono">
                     ${forecast?.currentRate ? forecast.currentRate.toFixed(2) : '—'}
                   </p>
-                  <p className="text-[10px] text-slate-400 mt-0.5">USD / MT</p>
+                  <p className="text-[10px] text-slate-500 mt-0.5">USD / MT</p>
                 </div>
                 <div className="p-3 rounded-xl bg-white border border-slate-200 shadow-xs">
                   <p className="text-[11px] font-semibold uppercase tracking-wider text-slate-500 mb-0.5">Momentum</p>
                   <p className={`text-sm font-extrabold truncate ${forecast?.momentumLabel === 'BULLISH' ? 'text-emerald-600' : forecast?.momentumLabel === 'BEARISH' ? 'text-rose-600' : 'text-slate-700'}`}>
                     {forecast?.momentumLabel || '—'} {forecast?.momentum != null ? `${forecast.momentum > 0 ? '+' : ''}${forecast.momentum}%` : ''}
                   </p>
-                  <p className="text-[10px] text-slate-400 mt-0.5">30D velocity</p>
+                  <p className="text-[10px] text-slate-500 mt-0.5">30D velocity</p>
                 </div>
                 <div className="p-3 rounded-xl bg-white border border-slate-200 shadow-xs">
                   <p className="text-[11px] font-semibold uppercase tracking-wider text-slate-500 mb-0.5">Geo Risk Index</p>
                   <p className="text-base font-extrabold text-amber-600 num font-mono">
                     {geoRisk != null ? `${Number(geoRisk).toFixed(1)}/100` : '—'}
                   </p>
-                  <p className="text-[10px] text-slate-400 mt-0.5">Chokepoints</p>
+                  <p className="text-[10px] text-slate-500 mt-0.5">Chokepoints</p>
                 </div>
               </div>
 
@@ -492,7 +492,7 @@ export default function FreightForecaster() {
                 <span className="text-slate-600">Forecast</span>
               </span>
               <span
-                className="hidden md:inline text-slate-400 font-mono text-[11px]"
+                className="hidden md:inline text-slate-500 font-mono text-[11px]"
                 title="P10/P90 bands widen with horizon: near-term days are tightest, Day 30 the widest"
               >
                 (P10/P90 bands widen with horizon)
@@ -523,7 +523,7 @@ export default function FreightForecaster() {
                 />
                 <YAxis stroke="#64748b" fontSize={11} domain={['dataMin - 2', 'dataMax + 2']} />
                 <Tooltip
-                  cursor={{ stroke: "#94a3b8", strokeWidth: 1, strokeDasharray: "4 4" }}
+                  cursor={{ stroke: "#64748b", strokeWidth: 1, strokeDasharray: "4 4" }}
                   contentStyle={{
                     background: 'rgba(255,255,255,0.98)',
                     border: '1px solid rgba(11,31,58,0.12)',
@@ -608,7 +608,7 @@ export default function FreightForecaster() {
                     <div className="flex justify-between items-center text-xs mb-2">
                       <div>
                         <span className="text-slate-800 font-bold block">{s.label}</span>
-                        <span className="text-[11px] text-slate-400 font-medium">{s.desc}</span>
+                        <span className="text-[11px] text-slate-500 font-medium">{s.desc}</span>
                       </div>
                       <span className={`num font-mono font-extrabold text-sm px-2 py-0.5 rounded-md ${
                         whatIf[s.key] > 0 ? 'bg-rose-50 text-rose-700' : whatIf[s.key] < 0 ? 'bg-emerald-50 text-emerald-700' : 'bg-slate-100 text-slate-700'
@@ -632,7 +632,7 @@ export default function FreightForecaster() {
               </div>
             </div>
 
-            <div className="mt-4 pt-3 border-t border-slate-200/70 text-[11px] text-slate-400 font-mono flex items-center justify-between">
+            <div className="mt-4 pt-3 border-t border-slate-200/70 text-[11px] text-slate-500 font-mono flex items-center justify-between">
               <span>Multiplicative shock on P10/P90 bands</span>
               <span>Symmetric ±range</span>
             </div>
@@ -720,7 +720,7 @@ export default function FreightForecaster() {
                     aria-label="Parcel size in metric tonnes"
                     className="w-24 px-2 py-1 text-xs font-mono font-bold border border-slate-300 rounded-lg bg-white text-slate-900 focus:outline-none focus:ring-2 focus:ring-sky-500"
                   />
-                  <span className="text-slate-400">MT</span>
+                  <span className="text-slate-500 font-medium">MT</span>
                 </label>
               </div>
 
@@ -743,7 +743,7 @@ export default function FreightForecaster() {
                         )}
                         <p className="text-[10px] font-mono text-slate-500 uppercase tracking-wider truncate">{item.type}</p>
                         <p className={`text-sm font-extrabold num font-mono mt-0.5 ${isOpt ? 'text-emerald-700' : 'text-slate-900'}`}>${(item.total / 1_000_000).toFixed(2)}M</p>
-                        <p className="text-[10px] text-slate-400 num font-mono">{(item.total).toLocaleString('en-US', { maximumFractionDigits: 0 })} USD</p>
+                        <p className="text-[10px] text-slate-500 num font-mono">{(item.total).toLocaleString('en-US', { maximumFractionDigits: 0 })} USD</p>
                       </div>
                     )
                   })
@@ -772,7 +772,7 @@ export default function FreightForecaster() {
                         <td className="py-2.5 px-3 text-right text-xs font-bold text-sky-700 num font-mono">${Number(item.rate).toFixed(2)}</td>
                         <td className="py-2.5 px-3 text-right text-xs font-mono num font-semibold">
                           {idx === 0 ? (
-                            <span className="text-slate-400">—</span>
+                            <span className="text-slate-500">—</span>
                           ) : (
                             <span className={item.delta < 0 ? 'text-emerald-700' : 'text-rose-700'}>
                               {item.delta < 0 ? '▼' : '▲'} {item.deltaPct.toFixed(1)}%
@@ -801,7 +801,7 @@ export default function FreightForecaster() {
                   <BarChart data={tcComparison.map((c) => ({ name: c.type, total: c.rate * parcelMT, isOpt: c.rate * parcelMT === Math.min(...tcComparison.map(x => x.rate * parcelMT)) }))} margin={{ top: 15, right: 10, left: -10, bottom: 0 }}>
                     <CartesianGrid strokeDasharray="3 3" stroke="rgba(11,31,58,0.06)" />
                     <XAxis dataKey="name" stroke="#64748b" fontSize={10} fontFamily="JetBrains Mono" />
-                    <YAxis stroke="#94a3b8" fontSize={10} tickFormatter={(v) => `$${(v / 1_000_000).toFixed(1)}M`} />
+                    <YAxis stroke="#64748b" fontSize={10} tickFormatter={(v) => `$${(v / 1_000_000).toFixed(1)}M`} />
                     <Tooltip
                       contentStyle={{ background: 'rgba(255,255,255,0.98)', border: '1px solid rgba(11,31,58,0.12)', borderRadius: '8px', fontSize: '11px' }}
                       formatter={(v) => `$${Number(v).toLocaleString('en-US', { maximumFractionDigits: 0 })}`}
@@ -866,7 +866,7 @@ export default function FreightForecaster() {
               >
                 <p className="text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1.5">{metric.label}</p>
                 <p className="text-2xl font-mono font-extrabold text-slate-900">{metric.value}</p>
-                <p className="text-[10px] text-slate-400 mt-1 font-medium">{metric.desc}</p>
+                <p className="text-[10px] text-slate-500 mt-1 font-medium">{metric.desc}</p>
               </motion.div>
             ))}
           </div>

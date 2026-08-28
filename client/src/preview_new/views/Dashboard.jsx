@@ -28,7 +28,7 @@ function kpiSeries(dash, kpis) {
 }
 
 const extraSignalColors = {
-  HOLD: 'bg-violet-500/10 text-violet-700 border-violet-300',
+  HOLD: 'bg-sky-50 text-sky-700 border-sky-200',
 }
 
 function portStatusFrom(destinations) {
@@ -154,7 +154,7 @@ export default function Dashboard() {
       <ScrollReveal>
         <div className="relative rounded-2xl border border-slate-200/90 bg-gradient-to-br from-white via-slate-50/70 to-sky-50/40 p-6 sm:p-8 lg:p-10 shadow-sm overflow-hidden mb-8">
           <div className="absolute -top-24 -left-20 w-[500px] h-[360px] bg-gradient-to-br from-sky-500/10 via-teal-500/5 to-transparent blur-3xl rounded-full pointer-events-none" />
-          <div className="absolute top-10 right-10 w-96 h-96 bg-gradient-to-br from-violet-500/5 via-sky-500/5 to-transparent blur-3xl rounded-full pointer-events-none" />
+          <div className="absolute top-10 right-10 w-96 h-96 bg-gradient-to-br from-cyan-500/5 via-sky-500/5 to-transparent blur-3xl rounded-full pointer-events-none" />
           
           <div className="relative grid lg:grid-cols-12 gap-8 lg:gap-12 items-center">
             <div className="lg:col-span-7 flex flex-col justify-between">
@@ -244,7 +244,7 @@ export default function Dashboard() {
                       ) : (
                         <span className={isNumeric ? 'kpi-value-gradient' : ''}>{kpi.value}</span>
                       )}
-                      <span className="text-[13px] font-semibold text-slate-400 tracking-normal">{kpi.unit || ''}</span>
+                      <span className="text-[13px] font-semibold text-slate-500 tracking-normal">{kpi.unit || ''}</span>
                     </p>
                   </div>
 
@@ -282,7 +282,7 @@ export default function Dashboard() {
               <p className="text-xs sm:text-sm text-slate-500 mt-1 pl-3.5">AI-generated freight rate forecasts with booking recommendations</p>
             </div>
             <div className="flex items-center gap-2 text-xs text-slate-500 font-medium px-3 py-1.5 rounded-lg bg-slate-50 border border-slate-200/60 self-start sm:self-auto">
-              <Clock className="w-3.5 h-3.5 text-slate-400" />
+              <Clock className="w-3.5 h-3.5 text-slate-500" />
               <span>{updatedAt ? `Updated ${timeAgo(new Date(updatedAt).toISOString())}` : 'Connecting to engine...'}</span>
             </div>
           </div>
@@ -344,7 +344,7 @@ export default function Dashboard() {
                     </td>
                     <td className="py-3.5 px-4 text-center">
                       <div className="inline-flex items-center gap-2">
-                        <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-bold border shadow-xs ${signalColors[route.signal] || extraSignalColors[route.signal] || 'bg-slate-500/20 text-slate-600 border-slate-500/30'}`}>
+                        <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-bold border shadow-xs ${signalColors[route.signal] || extraSignalColors[route.signal] || 'bg-slate-100 text-slate-700 border-slate-200'}`}>
                           {route.signal}
                         </span>
                         <span className={`text-xs font-bold ${urgencyColors[route.urgency]}`}>
@@ -451,7 +451,7 @@ export default function Dashboard() {
                       <span className={`inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold border ${severityColors[alert.severity] || severityColors.LOW}`}>
                         {alert.severity}
                       </span>
-                      <span className="text-[11px] text-slate-400 font-mono">{alert.time}</span>
+                      <span className="text-[11px] text-slate-500 font-mono">{alert.time}</span>
                     </div>
                     <h3 className="text-sm font-bold text-slate-900 mb-1 group-hover:text-sky-700 transition-colors leading-snug">
                       {alert.title}
@@ -460,7 +460,7 @@ export default function Dashboard() {
                     
                     <div className="flex items-center justify-between pt-2 border-t border-slate-100 text-xs text-slate-500">
                       <div className="flex items-center gap-1.5">
-                        <MapPin className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+                        <MapPin className="w-3.5 h-3.5 text-slate-500 shrink-0" />
                         <span className="font-medium truncate max-w-[180px]">{alert.location}</span>
                       </div>
                       <div className="flex gap-1.5 flex-wrap justify-end">

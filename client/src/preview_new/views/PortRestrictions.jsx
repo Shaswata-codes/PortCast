@@ -73,7 +73,7 @@ export default function PortRestrictions() {
             </div>
             <div className="flex flex-wrap items-center gap-3">
               <div className="relative">
-                <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+                <Search className="w-4 h-4 text-slate-500 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
                 <input
                   type="text"
                   value={query}
@@ -87,7 +87,7 @@ export default function PortRestrictions() {
                     type="button"
                     onClick={() => setQuery('')}
                     aria-label="Clear filter"
-                    className="absolute right-2 top-1/2 -translate-y-1/2 w-4 h-4 inline-flex items-center justify-center rounded text-slate-400 hover:text-slate-700 hover:bg-slate-200/60 transition-colors"
+                    className="absolute right-2 top-1/2 -translate-y-1/2 w-4 h-4 inline-flex items-center justify-center rounded text-slate-500 hover:text-slate-800 hover:bg-slate-200/60 transition-colors"
                   >
                     <X className="w-3.5 h-3.5" />
                   </button>
@@ -132,7 +132,7 @@ export default function PortRestrictions() {
                         </div>
                         <div>
                           <span className="text-sm font-bold text-slate-900 block leading-tight">{port.port}</span>
-                          <span className="text-[10px] font-mono text-slate-400">{port.state}</span>
+                          <span className="text-[10px] font-mono text-slate-500">{port.state}</span>
                         </div>
                       </div>
                     </td>
@@ -140,7 +140,7 @@ export default function PortRestrictions() {
                     <td className="py-3.5 px-3 text-right font-mono text-sm text-slate-700">{port.maxLOA}m</td>
                     <td className="py-3.5 px-3 text-right font-mono text-sm text-slate-700">{port.maxBeam}m</td>
                     <td className="py-3.5 px-3 text-right font-mono text-sm text-slate-700">{port.berths}</td>
-                    <td className="py-3.5 px-3 text-right font-mono text-sm font-semibold text-sky-700">{Number(port.dischargeRate).toLocaleString()} <span className="text-[10px] font-normal text-slate-400">t/d</span></td>
+                    <td className="py-3.5 px-3 text-right font-mono text-sm font-semibold text-sky-700">{Number(port.dischargeRate).toLocaleString()} <span className="text-[10px] font-normal text-slate-500">t/d</span></td>
                     <td className="py-3.5 px-3 text-right">
                       <span className={`font-mono text-xs font-bold px-2 py-0.5 rounded ${
                         port.waitingDays > 4 ? 'bg-rose-50 text-rose-700 border border-rose-200' :
@@ -155,7 +155,7 @@ export default function PortRestrictions() {
                         {port[cls] ? (
                           <CheckCircle2 className="w-4 h-4 text-emerald-600 mx-auto" />
                         ) : (
-                          <XCircle className="w-4 h-4 text-rose-400 mx-auto" />
+                          <XCircle className="w-4 h-4 text-rose-600 mx-auto" />
                         )}
                       </td>
                     ))}

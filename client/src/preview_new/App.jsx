@@ -63,7 +63,7 @@ function BootScreen() {
             className="h-full w-full bg-gradient-to-r from-sky-600 to-teal-500"
           />
         </div>
-        <p className="mt-4 text-xs text-slate-400 font-mono tracking-widest">MARITIME FREIGHT INTELLIGENCE</p>
+        <p className="mt-4 text-xs text-slate-500 font-mono tracking-widest font-medium">MARITIME FREIGHT INTELLIGENCE</p>
       </div>
     </div>
   )
@@ -141,7 +141,7 @@ export default function App() {
             <p className="text-xs text-slate-500">
               PortCast — Freight Forecasting & Charter Optimization for India's East Coast
             </p>
-            <p className="text-xs font-mono text-slate-400">SIH26006 · Transportation & Logistics</p>
+            <p className="text-xs font-mono text-slate-500 font-medium">SIH26006 · Transportation & Logistics</p>
           </div>
         </footer>
       </div>

@@ -94,7 +94,7 @@ export default function Home({ onNavigate }) {
             </span>
             <div className="flex items-center gap-2 text-xs font-mono text-slate-800">
               <span className="font-extrabold text-slate-950 tracking-tight">MV SEA GUARDIAN</span>
-              <span className="text-slate-400">·</span>
+              <span className="text-slate-500">·</span>
               <span className="text-slate-700 font-semibold">Capesize 180k DWT</span>
             </div>
           </div>
@@ -355,11 +355,11 @@ export default function Home({ onNavigate }) {
             {/* Quick Link Card to full matrix */}
             <div
               onClick={() => handleNav('ports')}
-              className={`p-7 rounded-3xl border border-white/60 hover:border-white/90 bg-white/[0.18] hover:bg-white/[0.30] backdrop-blur-xl transition-all cursor-pointer flex flex-col items-center justify-center text-center group shadow-[0_8px_32px_0_rgba(0,0,0,0.06),inset_0_1px_1px_0_rgba(255,255,255,0.7)]`}
+              className={`p-7 rounded-3xl ${glassCard} cursor-pointer flex flex-col items-center justify-center text-center group`}
             >
               <h4 className="text-base font-bold text-slate-950 group-hover:text-sky-900">View Full Compliance Matrix</h4>
               <p className="text-xs text-slate-700 mt-2 max-w-[220px] font-medium">Inspect LOA, Beam, tidal limits, and Sandheads barge specs</p>
-              <span className="mt-4 text-xs font-bold text-sky-900 flex items-center gap-1">
+              <span className="mt-4 text-xs font-bold text-sky-900 flex items-center gap-1 group-hover:translate-x-0.5 transition-transform">
                 Open Ports Matrix <ArrowRight className="w-3.5 h-3.5" />
               </span>
             </div>

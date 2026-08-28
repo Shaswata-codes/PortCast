@@ -160,7 +160,7 @@ export default function Login({ onNavigate, onLoginSuccess }) {
                     Full Name & Title
                   </label>
                   <div className="relative">
-                    <User className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                    <User className="w-4 h-4 text-slate-500 absolute left-3.5 top-1/2 -translate-y-1/2" />
                     <input
                       type="text"
                       required
@@ -179,7 +179,7 @@ export default function Login({ onNavigate, onLoginSuccess }) {
                     Role / Organization
                   </label>
                   <div className="relative">
-                    <Ship className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                    <Ship className="w-4 h-4 text-slate-500 absolute left-3.5 top-1/2 -translate-y-1/2" />
                     <select
                       value={role}
                       onChange={(e) => setRole(e.target.value)}
@@ -200,7 +200,7 @@ export default function Login({ onNavigate, onLoginSuccess }) {
                   Email Address
                 </label>
                 <div className="relative">
-                  <Mail className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                  <Mail className="w-4 h-4 text-slate-500 absolute left-3.5 top-1/2 -translate-y-1/2" />
                   <input
                     type="email"
                     required
@@ -228,7 +228,7 @@ export default function Login({ onNavigate, onLoginSuccess }) {
                   )}
                 </div>
                 <div className="relative">
-                  <Lock className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                  <Lock className="w-4 h-4 text-slate-500 absolute left-3.5 top-1/2 -translate-y-1/2" />
                   <input
                     type={showPassword ? 'text' : 'password'}
                     required
@@ -240,7 +240,7 @@ export default function Login({ onNavigate, onLoginSuccess }) {
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 focus:outline-none"
+                    className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-700 focus:outline-none"
                   >
                     {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                   </button>
@@ -265,7 +265,7 @@ export default function Login({ onNavigate, onLoginSuccess }) {
 
             {/* Quick Demo Access Pills */}
             <div className="mt-6 pt-5 border-t border-slate-100">
-              <p className="text-[11px] font-mono uppercase tracking-wider text-slate-400 mb-2.5 flex items-center gap-1.5">
+              <p className="text-[11px] font-mono uppercase tracking-wider text-slate-500 mb-2.5 flex items-center gap-1.5 font-semibold">
                 <Sparkles className="w-3.5 h-3.5 text-amber-500" />
                 One-Click Demo Credentials
               </p>
@@ -278,7 +278,7 @@ export default function Login({ onNavigate, onLoginSuccess }) {
                   <p className="text-xs font-bold text-slate-800 group-hover:text-sky-800">
                     Capt. Alex Vance
                   </p>
-                  <p className="text-[10px] font-mono text-slate-500">demo@portcast.ai · Chief Charterer</p>
+                  <p className="text-[10px] font-mono text-slate-600">demo@portcast.ai · Chief Charterer</p>
                 </button>
                 <button
                   type="button"
@@ -288,13 +288,13 @@ export default function Login({ onNavigate, onLoginSuccess }) {
                   <p className="text-xs font-bold text-slate-800 group-hover:text-teal-800">
                     Priya Sharma
                   </p>
-                  <p className="text-[10px] font-mono text-slate-500">charterer@portcast.ai · Fleet Operator</p>
+                  <p className="text-[10px] font-mono text-slate-600">charterer@portcast.ai · Fleet Operator</p>
                 </button>
               </div>
             </div>
 
             {/* Footer note */}
-            <div className="mt-4 flex items-center justify-center gap-2 text-[11px] text-slate-400 font-mono">
+            <div className="mt-4 flex items-center justify-center gap-2 text-[11px] text-slate-500 font-mono font-medium">
               <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
               <span>JWT Encrypted Session · Standalone & Cloud Ready</span>
             </div>

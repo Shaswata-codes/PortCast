@@ -76,7 +76,7 @@ export default function Navbar({ activeView, onViewChange, user, onLogout }) {
             </div>
             <div className="leading-none">
               <h1 className="text-base font-bold text-slate-900 tracking-tight">PortCast</h1>
-              <p className="text-[9px] text-slate-400 font-mono tracking-[0.18em] mt-0.5">FREIGHT INTELLIGENCE</p>
+              <p className="text-[9px] text-slate-500 font-mono tracking-[0.18em] mt-0.5 font-medium">FREIGHT INTELLIGENCE</p>
             </div>
           </div>
 
@@ -126,11 +126,11 @@ export default function Navbar({ activeView, onViewChange, user, onLogout }) {
                     <p className="text-xs font-bold text-slate-800 line-clamp-1 max-w-[130px]">
                       {currentUser.name}
                     </p>
-                    <p className="text-[9px] font-mono text-slate-400">
+                    <p className="text-[9px] font-mono text-slate-500 font-medium">
                       {currentUser.role || 'Charterer'}
                     </p>
                   </div>
-                  <ChevronDown className="w-3.5 h-3.5 text-slate-400 group-hover:text-slate-600 transition-transform" />
+                  <ChevronDown className="w-3.5 h-3.5 text-slate-500 group-hover:text-slate-700 transition-transform" />
                 </button>
 
                 <AnimatePresence>
@@ -156,7 +156,7 @@ export default function Navbar({ activeView, onViewChange, user, onLogout }) {
                           onClick={() => { setDropdownOpen(false); onViewChange('dashboard') }}
                           className="w-full text-left px-4 py-2 text-xs text-slate-700 hover:bg-slate-50 flex items-center gap-2"
                         >
-                          <LayoutDashboard className="w-3.5 h-3.5 text-slate-400" />
+                          <LayoutDashboard className="w-3.5 h-3.5 text-slate-500" />
                           Dashboard Overview
                         </button>
                         <button
@@ -164,7 +164,7 @@ export default function Navbar({ activeView, onViewChange, user, onLogout }) {
                           onClick={() => { setDropdownOpen(false); onViewChange('optimizer') }}
                           className="w-full text-left px-4 py-2 text-xs text-slate-700 hover:bg-slate-50 flex items-center gap-2"
                         >
-                          <Ship className="w-3.5 h-3.5 text-slate-400" />
+                          <Ship className="w-3.5 h-3.5 text-slate-500" />
                           Charter Optimizer
                         </button>
                       </div>

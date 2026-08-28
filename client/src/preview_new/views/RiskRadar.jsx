@@ -15,7 +15,7 @@ const FACTOR_COLORS = {
   'Bunker Price': '#d97706',
   'Port Congestion': '#e11d48',
   'Demand Shock': '#059669',
-  'Cyclone Disruption': '#7c3aed',
+  'Cyclone Disruption': '#0891b2',
 }
 
 function feedFrom(alerts = []) {
@@ -214,7 +214,7 @@ export default function RiskRadar() {
                     <span className={`px-2 py-0.5 rounded text-[10px] font-bold border ${severityColors[alert.severity] || severityColors.LOW}`}>
                       {alert.severity}
                     </span>
-                    <span className="text-[10px] text-slate-400 font-mono">{alert.time}</span>
+                    <span className="text-[10px] text-slate-500 font-mono">{alert.time}</span>
                   </div>
                   <h3 className="text-sm font-bold text-slate-900 mb-1.5 line-clamp-2 leading-snug">{alert.title}</h3>
                   <p className="text-xs text-slate-600 mb-3 line-clamp-2 leading-relaxed">{alert.impact}</p>
@@ -243,7 +243,7 @@ export default function RiskRadar() {
               }).length === 0 && (
               <div className="col-span-full p-8 text-center rounded-xl border border-dashed border-slate-300 bg-slate-50/50">
                 <p className="text-sm text-slate-600">No alerts match the current filters.</p>
-                <p className="text-xs text-slate-400 mt-1">Try severity <span className="font-mono">ALL</span> or a different region.</p>
+                <p className="text-xs text-slate-500 mt-1 font-medium">Try severity <span className="font-mono font-bold text-slate-700">ALL</span> or a different region.</p>
               </div>
             )}
           </div>
@@ -344,7 +344,7 @@ export default function RiskRadar() {
                       className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-sky-600"
                       style={{ accentColor: '#0284c7' }}
                     />
-                    <div className="flex justify-between text-[10px] text-slate-400 mt-1 font-mono">
+                    <div className="flex justify-between text-[10px] text-slate-500 mt-1 font-mono">
                       <span>{scenario.min}{scenario.unit}</span>
                       <span>{scenario.max}{scenario.unit}</span>
                     </div>
@@ -409,14 +409,14 @@ export default function RiskRadar() {
                 <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-200 text-center">
                   <p className="text-[10px] text-slate-500 mb-1 uppercase tracking-wider font-mono font-semibold">Base Spot Rate</p>
                   <p className="text-xl num font-bold text-slate-900">${Number(baseRate).toFixed(2)}</p>
-                  <p className="text-[10px] text-slate-400 font-mono">$/MT</p>
+                  <p className="text-[10px] text-slate-500 font-mono">$/MT</p>
                 </div>
                 <div className={`p-3.5 rounded-xl border text-center transition-colors ${delta >= 0 ? 'bg-rose-50/70 border-rose-200' : 'bg-emerald-50/70 border-emerald-200'}`}>
                   <p className="text-[10px] text-slate-500 mb-1 uppercase tracking-wider font-mono font-semibold">Simulated Rate</p>
                   <p className={`text-xl num font-bold ${delta >= 0 ? 'text-rose-700' : 'text-emerald-700'}`}>
                     ${Number(simulatedRate).toFixed(2)}
                   </p>
-                  <p className="text-[10px] text-slate-400 font-mono">$/MT</p>
+                  <p className="text-[10px] text-slate-500 font-mono">$/MT</p>
                 </div>
                 <div className={`p-3.5 rounded-xl border text-center ${delta >= 0 ? 'bg-amber-50/70 border-amber-200' : 'bg-emerald-50/70 border-emerald-200'}`}>
                   <p className="text-[10px] text-slate-500 mb-1 uppercase tracking-wider font-mono font-semibold">Stress Delta</p>
