@@ -7,7 +7,7 @@ export const marketTickerData = [
   { label: 'VLSFO', value: '$612.50', change: '+2.1%', trend: 'up' },
   { label: 'MGO', value: '$784.20', change: '-0.5%', trend: 'down' },
   { label: 'Risk Index', value: '51.1/100', change: 'x1.102', trend: 'neutral' },
-  { label: 'System', value: 'LIVE', change: '99.98%', trend: 'up' },
+  { label: 'System', value: 'ONLINE', change: '99.98%', trend: 'up' },
 ]
 
 // KPI Metrics

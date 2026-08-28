@@ -160,9 +160,9 @@ export default function Dashboard() {
             <div className="lg:col-span-7 flex flex-col justify-between">
               <div>
                 <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-sky-50 border border-sky-200/80 shadow-xs mb-5">
-                  <span className="w-2 h-2 rounded-full bg-sky-500 animate-pulse" />
+                  <span className="w-2 h-2 rounded-full bg-sky-500" />
                   <span className="text-xs font-semibold text-sky-800 tracking-wide uppercase font-mono">
-                    {dash ? 'Live Market Intelligence' : 'Real-Time Market Intelligence'}
+                    Market Intelligence & Forecasting
                   </span>
                 </div>
                 
@@ -183,7 +183,7 @@ export default function Dashboard() {
                   { k: 'Routes Monitored', v: String(dash?.routesCount ?? 20) },
                   { k: 'East Coast Ports', v: '9' },
                   { k: 'Avg Spot Rate', v: `$${(kpiMetrics[1]?.value || '$12.40').replace('$','')}` },
-                  { k: 'AI Signals', v: 'Live' },
+                  { k: 'AI Engine', v: 'Active' },
                 ].map((s) => (
                   <div key={s.k} className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/90 border border-slate-200 shadow-xs text-xs font-medium text-slate-700">
                     <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
