@@ -282,19 +282,14 @@ export default function Home({ onNavigate, user, onLoginSuccess }) {
                   ) : (
                     /* Login Form View */
                     <form onSubmit={handleLoginSubmit} className="space-y-4">
-                      <div className="flex items-center justify-between border-b border-slate-200/80 pb-3">
-                        <div className="flex items-center gap-2.5">
-                          <div className="w-8 h-8 rounded-xl bg-slate-900 text-white flex items-center justify-center shadow-sm">
-                            <Lock className="w-4 h-4 text-sky-400" />
-                          </div>
-                          <div>
-                            <h2 className="text-base font-extrabold text-slate-900 tracking-tight leading-tight">Charterer Sign In</h2>
-                            <p className="text-[11px] text-slate-600 font-mono">Enterprise Terminal Access</p>
-                          </div>
+                      <div className="flex items-center gap-2.5 border-b border-slate-200/80 pb-3">
+                        <div className="w-8 h-8 rounded-xl bg-slate-900 text-white flex items-center justify-center shadow-sm">
+                          <Lock className="w-4 h-4 text-sky-400" />
                         </div>
-                        <span className="text-[10px] font-mono font-bold text-sky-700 bg-sky-50 px-2 py-0.5 rounded-md border border-sky-200">
-                          PROD SECURE
-                        </span>
+                        <div>
+                          <h2 className="text-base font-extrabold text-slate-900 tracking-tight leading-tight">Charterer Sign In</h2>
+                          <p className="text-[11px] text-slate-600 font-mono">Enterprise Terminal Access</p>
+                        </div>
                       </div>
 
                       {loginError && (
