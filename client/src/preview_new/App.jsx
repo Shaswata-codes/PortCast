@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { motion, useScroll, useSpring } from 'framer-motion'
 import Navbar from './components/Navbar'
-import MarketTicker from './components/MarketTicker'
 import OceanBackground from './components/OceanBackground'
 import ErrorBoundary from './components/ErrorBoundary'
 import { setDeepLinkRouteId } from './services/routeStore'
@@ -111,7 +110,6 @@ export default function App() {
       <motion.div className="scroll-progress" style={{ scaleX: progress, transformOrigin: '0% 50%' }} />
       <div className="relative z-10">
         <header className="sticky top-0 z-40">
-          <MarketTicker />
           <Navbar activeView={activeView} onViewChange={setActiveView} />
         </header>
         <main key={activeView} className="view-enter">
