@@ -9,6 +9,7 @@ Exposes REST endpoints for:
 """
 
 import os
+import threading
 import joblib
 import numpy as np
 import pandas as pd
@@ -20,6 +21,36 @@ from pydantic import BaseModel
 
 from news_radar import analyze_geopolitical_risk
 from optimizer import optimize_charter
+
+@asynccontextmanager
+async def lifespan(_app):
+    load_models()
+
+    def _warm():
+        try:
+            get_geopolitical_radar()
+            print("[ml] radar cache warmed")
+        except Exception as e:
+            print(f"[ml] radar warmup skipped: {e}")
+
+    threading.Thread(target=_warm, daemon=True).start()
+    yield
+
+
+app = FastAPI(
+    title="PortCast ML Intelligence Service",
+    version="1.0.0",
+    lifespan=lifespan,
+)
+
+# Enable CORS for React frontend and Node.js backend
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 MODELS_DIR = os.path.join(BASE_DIR, "ml", "models")
@@ -49,31 +80,6 @@ def load_models():
         except Exception as e:
             print(f"[ml] Rate history unavailable: {e}")
 
-@asynccontextmanager
-async def lifespan(application):
-    """Modern lifespan handler — runs on startup and shutdown."""
-    load_models()
-    import threading
-    def _warm():
-        try:
-            get_geopolitical_radar()
-            print("[ml] radar cache warmed")
-        except Exception as e:
-            print(f"[ml] radar warmup skipped: {e}")
-    threading.Thread(target=_warm, daemon=True).start()
-    yield  # App runs here
-    print("[ml] Shutting down ML service")
-
-app = FastAPI(title="PortCast ML Intelligence Service", version="1.0.0", lifespan=lifespan)
-
-# Enable CORS for React frontend and Node.js backend
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
 
 def _roll(hist, win, kind):
     seg = np.asarray(hist[-win:], dtype=float)
@@ -82,6 +88,14 @@ def _roll(hist, win, kind):
     if kind == "std":
         return float(seg.std())
     return float((seg[-1] - seg.mean()) / max(abs(seg.mean()), 1e-9))
+
+
+def _predict_point(bundle, X):
+    point_prediction = bundle["point_model"].predict(X)
+    xgb_model = bundle.get("xgb_model")
+    if xgb_model is not None:
+        point_prediction = (point_prediction + xgb_model.predict(X)) / 2.0
+    return point_prediction
 
 def _recursive_trajectory(days=30):
     """Recursive multi-step LightGBM forecast on the trained feature space."""
@@ -114,7 +128,7 @@ def _recursive_trajectory(days=30):
             row["is_sw_monsoon"] = int(5 <= m <= 8)
             row["is_cyclone_season"] = int(9 <= m <= 11)
             X = pd.DataFrame([[row.get(c, 0.0) for c in feats]], columns=feats)
-            pt = float(bundle["point_model"].predict(X)[0])
+            pt = float(_predict_point(bundle, X)[0])
             lo = float(bundle["p10_model"].predict(X)[0])
             hi = float(bundle["p90_model"].predict(X)[0])
             hist.append(pt)
