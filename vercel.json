@@ -1,0 +1,34 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "ml/service.py",
+      "use": "@vercel/python"
+    },
+    {
+      "src": "server/src/app.js",
+      "use": "@vercel/node"
+    },
+    {
+      "src": "client/package.json",
+      "use": "@vercel/static-build",
+      "config": {
+        "distDir": "dist"
+      }
+    }
+  ],
+  "rewrites": [
+    {
+      "source": "/api/ml/(.*)",
+      "destination": "/ml/service.py"
+    },
+    {
+      "source": "/api/(.*)",
+      "destination": "/server/src/app.js"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/client/dist/$1"
+    }
+  ]
+}

@@ -69,3 +69,40 @@ export async function fetchMLOptimize(destinationPort, distanceNM, cargoMT, pred
   }
   return null;
 }
+
+export async function fetchMLSimulate(baseRate, fuelDeltaPct, waitDaysDelta, demandShockPct, geopoliticalShock) {
+  try {
+    const res = await fetchWithRetry(`${ML_SERVICE_URL}/api/ml/simulate`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        base_rate: Number(baseRate) || 18.0,
+        fuel_price_delta_pct: Number(fuelDeltaPct) || 0.0,
+        wait_days_delta: Number(waitDaysDelta) || 0.0,
+        demand_shock_pct: Number(demandShockPct) || 0.0,
+        geopolitical_shock: Boolean(geopoliticalShock)
+      })
+    });
+    if (res && res.ok) {
+      return await res.json();
+    }
+  } catch (err) {
+    console.error('ML Simulate Bridge error:', err.message);
+  }
+  return null;
+}
+
+export async function fetchMLHealth() {
+  try {
+    const res = await fetchWithRetry(`${ML_SERVICE_URL}/api/ml/health`, {
+      method: 'GET',
+      headers: { 'Content-Type': 'application/json' }
+    });
+    if (res && res.ok) {
+      return await res.json();
+    }
+  } catch (err) {
+    console.error('ML Health Bridge error:', err.message);
+  }
+  return null;
+}

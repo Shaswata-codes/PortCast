@@ -14,22 +14,76 @@ import json
 import joblib
 import pandas as pd
 import numpy as np
+from sklearn.base import clone
 from sklearn.model_selection import TimeSeriesSplit
 from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
-from sklearn.ensemble import GradientBoostingRegressor
 import lightgbm as lgb
+
+from stacking import P90StackingModel
 
 try:
     import xgboost as xgb
     XGBOOST_AVAILABLE = True
 except ImportError:
     XGBOOST_AVAILABLE = False
-    print("⚠️  xgboost not installed — skipping XGBoost training. pip install xgboost>=2.0")
+    print("[WARN] xgboost not installed -- skipping XGBoost training. pip install xgboost>=2.0")
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DATA_PATH = os.path.join(BASE_DIR, "ml", "data", "processed_freight_master.csv")
 MODELS_DIR = os.path.join(BASE_DIR, "ml", "models")
 os.makedirs(MODELS_DIR, exist_ok=True)
+
+
+def _tune_lightgbm(X_train, y_train):
+    split = max(1, int(len(X_train) * 0.8))
+    candidates = [
+        {"n_estimators": 180, "learning_rate": 0.04, "num_leaves": 15},
+        {"n_estimators": 240, "learning_rate": 0.03, "num_leaves": 31},
+        {"n_estimators": 160, "learning_rate": 0.05, "num_leaves": 23},
+    ]
+    best_params, best_loss = candidates[0], float("inf")
+    for params in candidates:
+        candidate = lgb.LGBMRegressor(**params, random_state=42, verbosity=-1)
+        candidate.fit(X_train.iloc[:split], y_train.iloc[:split])
+        loss = mean_absolute_error(y_train.iloc[split:], candidate.predict(X_train.iloc[split:]))
+        if loss < best_loss:
+            best_params, best_loss = params, loss
+    print(f"Tuned LightGBM parameters: {best_params} (validation MAE={best_loss:.4f})")
+    return best_params
+
+
+def _make_xgb_quantile(alpha):
+    return xgb.XGBRegressor(
+        objective="reg:quantileerror", quantile_alpha=alpha,
+        n_estimators=180, learning_rate=0.04, max_depth=4,
+        min_child_weight=3, subsample=0.85, colsample_bytree=0.85,
+        random_state=42, verbosity=0, tree_method="hist",
+    )
+
+
+def _fit_p90_stack(X_train, y_train, lower_model):
+    base_lgb = lgb.LGBMRegressor(
+        objective="quantile", alpha=0.90, n_estimators=180,
+        learning_rate=0.04, num_leaves=23, random_state=42, verbosity=-1,
+    )
+    base_xgb = _make_xgb_quantile(0.90)
+    oof_predictions, oof_targets = [], []
+    for fit_idx, validation_idx in TimeSeriesSplit(n_splits=3).split(X_train):
+        fold_lgb = clone(base_lgb).fit(X_train.iloc[fit_idx], y_train.iloc[fit_idx])
+        fold_xgb = clone(base_xgb).fit(X_train.iloc[fit_idx], y_train.iloc[fit_idx])
+        oof_predictions.extend(zip(
+            fold_lgb.predict(X_train.iloc[validation_idx]),
+            fold_xgb.predict(X_train.iloc[validation_idx]),
+        ))
+        oof_targets.extend(y_train.iloc[validation_idx])
+    meta_model = lgb.LGBMRegressor(
+        objective="quantile", alpha=0.90, n_estimators=100,
+        learning_rate=0.04, num_leaves=7, random_state=42, verbosity=-1,
+    )
+    meta_model.fit(np.asarray(oof_predictions), np.asarray(oof_targets))
+    base_lgb.fit(X_train, y_train)
+    base_xgb.fit(X_train, y_train)
+    return P90StackingModel(base_lgb, base_xgb, meta_model, lower_model)
 
 def train_models():
     print(f"Loading dataset from {DATA_PATH}...")
@@ -62,19 +116,13 @@ def train_models():
 
     # 1. Train Primary Point Regressor (LightGBM)
     print("\n--- Training Primary LightGBM Point Regressor ---")
-    point_model = lgb.LGBMRegressor(
-        n_estimators=300,
-        learning_rate=0.03,
-        num_leaves=31,
-        random_state=42,
-        verbosity=-1
-    )
-
-    # Train-test split using TimeSeriesSplit
+    # Chronological holdout keeps future observations out of training.
     split_idx = int(len(X) * 0.85)
     X_train, X_test = X.iloc[:split_idx], X.iloc[split_idx:]
     y_train, y_test = y.iloc[:split_idx], y.iloc[split_idx:]
 
+    point_params = _tune_lightgbm(X_train, y_train)
+    point_model = lgb.LGBMRegressor(**point_params, random_state=42, verbosity=-1)
     point_model.fit(X_train, y_train)
     preds = point_model.predict(X_test)
 
@@ -82,7 +130,7 @@ def train_models():
     mae_lgb = mean_absolute_error(y_test, preds)
     r2_lgb = r2_score(y_test, preds)
 
-    print(f"✅ LightGBM Test Metrics: RMSE = {rmse_lgb:.4f} | MAE = {mae_lgb:.4f} | R² = {r2_lgb:.4f}")
+    print(f"[OK] LightGBM Test Metrics: RMSE = {rmse_lgb:.4f} | MAE = {mae_lgb:.4f} | R2 = {r2_lgb:.4f}")
 
     # 1b. Train XGBoost (if available) + hybrid ensemble
     xgb_model = None
@@ -105,22 +153,22 @@ def train_models():
         rmse_xgb = np.sqrt(mean_squared_error(y_test, preds_xgb))
         mae_xgb = mean_absolute_error(y_test, preds_xgb)
         r2_xgb = r2_score(y_test, preds_xgb)
-        print(f"✅ XGBoost Test Metrics:  RMSE = {rmse_xgb:.4f} | MAE = {mae_xgb:.4f} | R² = {r2_xgb:.4f}")
+        print(f"[OK] XGBoost Test Metrics:  RMSE = {rmse_xgb:.4f} | MAE = {mae_xgb:.4f} | R2 = {r2_xgb:.4f}")
 
         # Hybrid ensemble = mean(lightgbm, xgboost)
         preds_ens = (preds + preds_xgb) / 2.0
         rmse_ens = np.sqrt(mean_squared_error(y_test, preds_ens))
         mae_ens = mean_absolute_error(y_test, preds_ens)
         r2_ens = r2_score(y_test, preds_ens)
-        print(f"🧬 Ensemble (avg):        RMSE = {rmse_ens:.4f} | MAE = {mae_ens:.4f} | R² = {r2_ens:.4f}")
+        print(f"[ENS] Ensemble (avg):        RMSE = {rmse_ens:.4f} | MAE = {mae_ens:.4f} | R2 = {r2_ens:.4f}")
 
         # Use the better of (LightGBM, ensemble) for downstream serving
         if r2_ens >= r2_lgb:
             rmse, mae, r2 = rmse_ens, mae_ens, r2_ens
-            print(f"→ Serving from HYBRID ensemble (R²={r2:.4f})")
+            print(f"-> Serving from HYBRID ensemble (R2={r2:.4f})")
         else:
             rmse, mae, r2 = rmse_lgb, mae_lgb, r2_lgb
-            print(f"→ Serving from LightGBM (R²={r2:.4f})")
+            print(f"-> Serving from LightGBM (R2={r2:.4f})")
     else:
         rmse, mae, r2 = rmse_lgb, mae_lgb, r2_lgb
 
@@ -129,22 +177,32 @@ def train_models():
     p10_model = lgb.LGBMRegressor(
         objective="quantile",
         alpha=0.10,
-        n_estimators=200,
-        learning_rate=0.03,
+        n_estimators=180,
+        learning_rate=0.04,
+        num_leaves=23,
         random_state=42,
         verbosity=-1
     )
     p10_model.fit(X_train, y_train)
 
-    p90_model = lgb.LGBMRegressor(
-        objective="quantile",
-        alpha=0.90,
-        n_estimators=200,
-        learning_rate=0.03,
-        random_state=42,
-        verbosity=-1
-    )
-    p90_model.fit(X_train, y_train)
+    print("\n--- Training leakage-safe P90 LightGBM + XGBoost stack ---")
+    p90_model = _fit_p90_stack(X_train, y_train, p10_model)
+    p90_lgb = p90_model.lightgbm_model.predict(X_test)
+    p90_xgb = p90_model.xgboost_model.predict(X_test)
+    p90_stack = p90_model.predict(X_test)
+
+    def pinball_loss(actual, predicted, quantile):
+        error = actual - predicted
+        return float(np.mean(np.maximum(quantile * error, (quantile - 1) * error)))
+
+    p90_metrics = {
+        "lightgbm_pinball": pinball_loss(y_test, p90_lgb, 0.90),
+        "xgboost_pinball": pinball_loss(y_test, p90_xgb, 0.90),
+        "stack_pinball": pinball_loss(y_test, p90_stack, 0.90),
+        "xgboost_mae": float(mean_absolute_error(y_test, p90_xgb)),
+        "stack_mae": float(mean_absolute_error(y_test, p90_stack)),
+    }
+    print(f"P90 metrics: {p90_metrics}")
 
     # 3. Feature Importance Extraction (averaged across LightGBM + XGBoost if available)
     importances_lgb = dict(zip(feature_cols, [float(x) for x in point_model.feature_importances_]))
@@ -176,6 +234,7 @@ def train_models():
                 if xgb_model is not None else None
             ),
             "ensemble": "LightGBM + XGBoost (mean)" if xgb_model is not None else "LightGBM only",
+            "p90_stack": p90_metrics,
         },
         "top_features": sorted_importance,
         "latest_features": X.iloc[-1].to_dict()
@@ -183,7 +242,7 @@ def train_models():
 
     model_file = os.path.join(MODELS_DIR, "freight_forecasting_bundle.pkl")
     joblib.dump(model_bundle, model_file)
-    print(f"\n🎉 Saved model bundle to: {model_file}")
+    print(f"\n[DONE] Saved model bundle to: {model_file}")
 
     # Also save JSON metadata for fast Node.js reading
     metadata_file = os.path.join(MODELS_DIR, "model_metadata.json")

@@ -30,9 +30,9 @@ Built around a **hybrid LightGBM + XGBoost ensemble** trained on Baltic indices,
 ## Features
 
 ### Hybrid ML forecasting
-- **Point + quantile ensemble**: `pred = (LightGBM + XGBoost) / 2`, with separate P10 (lower) and P90 (shock upper) LightGBM quantile regressors.
+- **Point + quantile ensemble**: `pred = (LightGBM + XGBoost) / 2`, with LightGBM P10 and a leakage-safe LightGBM + XGBoost P90 stack.
 - **7 / 14 / 30 day forecast horizons** plus a 30-day day-by-day trajectory.
-- **R² = 0.9943** on the held-out 15% test split (RMSE 0.20, MAE 0.15).
+- **R² = 0.9953** for the served point ensemble on the chronological 15% holdout (RMSE 0.18, MAE 0.14).
 - **Feature importance** averaged across both models (`rate_ma_14`, `rate_ma_7`, `rate_momentum_7`, `rate_lag_1`, `rate_lag_7` dominate).
 
 ### Booking window heatmap
@@ -149,7 +149,7 @@ The composite dataset `ml/data/processed_freight_master.csv` is built from four 
 3. **Live Yahoo Finance feeds** — `BDRY` (Breakwave Dry Bulk ETF), `CL=F` (WTI crude), `BZ=F` (Brent), `SBLK` (Star Bulk Carriers), `GNK` (Genco).
 4. **Domain masters** — `server/src/data/portsData.js` (9 East Coast + 7 global origin ports), `vesselsData.js` (5 vessel classes), `routesData.js` (20 routes).
 
-The data is left-joined on `date`, then forward-filled. The final feature set is 33 columns × ~4,200 rows.
+The data is left-joined on `date`, then forward-filled. Training uses 39 features across ~4,200 rows: 33 source/seasonal features plus six causal target lags.
 
 ### 2. Feature engineering
 - **Causal lags** of the target: `rate_lag_1, 2, 3, 5, 7, 14` (so the model can learn autoregression without peeking at the same instant).
@@ -165,50 +165,60 @@ The data is left-joined on `date`, then forward-filled. The final feature set is
 ### 3. Train / test split
 85% train, 15% test, **time-ordered** (no random shuffle — the model has to forecast the future).
 
-### 4. Model A — LightGBM point regressor
+### 4. Model A — Tuned LightGBM point regressor
 ```python
 lgb.LGBMRegressor(
-    n_estimators=300, learning_rate=0.03, num_leaves=31,
+  n_estimators=160, learning_rate=0.05, num_leaves=23,
     random_state=42, verbosity=-1,
 )
 ```
-Metrics on test: **RMSE 0.2059 · MAE 0.1548 · R² 0.9940**.
+Three compact configurations are compared on an ordered validation slice before the final model is fit. Holdout metrics: **RMSE 0.190 · MAE 0.142 · R² 0.9950**.
 
 ### 5. Model B — XGBoost point regressor
 ```python
 xgb.XGBRegressor(
-    n_estimators=300, learning_rate=0.03, max_depth=6,
+    n_estimators=180, learning_rate=0.04, max_depth=4,
+    min_child_weight=3,
     subsample=0.85, colsample_bytree=0.85, tree_method='hist',
     random_state=42, verbosity=0,
 )
 ```
-Metrics on test: **RMSE 0.2426 · MAE 0.1703 · R² 0.9917**.
+Holdout metrics: **RMSE 0.205 · MAE 0.151 · R² 0.9941**. XGBoost is not served alone; it contributes to the point ensemble and P90 stack.
 
 ### 6. Hybrid ensemble
 ```python
 preds_ens = (preds_lgb + preds_xgb) / 2.0
 ```
-Metrics: **RMSE 0.2007 · MAE 0.1466 · R² 0.9943** (ensemble beats either alone). The serving path automatically picks the better of (ensemble, LightGBM) per retrain.
+Holdout metrics: **RMSE 0.184 · MAE 0.136 · R² 0.9953**. The API now serves this LightGBM + XGBoost average for recursive point forecasts.
 
 ### 7. Quantile bands (P10 / P90)
 ```python
 lgb.LGBMRegressor(objective="quantile", alpha=0.10, ...)  # P10
-lgb.LGBMRegressor(objective="quantile", alpha=0.90, ...)  # P90
 ```
-The P10/P90 bands widen with horizon: near-term days are tightest, Day 30 the widest — reflecting cumulative forecast uncertainty.
+P10 is a tuned LightGBM quantile model. P90 uses LightGBM and native XGBoost quantile models as base learners, followed by a LightGBM quantile meta-model trained on walk-forward out-of-fold predictions. The persisted wrapper also enforces `P90 >= P10`, preventing quantile crossing.
+
+P90 holdout pinball loss was **2.129 for LightGBM**, **2.112 for XGBoost**, and **2.110 for the stack**. Empirical P10-P90 coverage was **71.27%**, with zero crossings.
 
 ### 8. Feature importance averaging
 For UI display, importance gain is normalized to 0–1 per model, then averaged across the two models. The top-10 are written to `ml/models/model_metadata.json` and used by the SHAP-lite panel on the Forecaster.
 
 ### 9. Recursive 30-day forecast
-The ML service does a single-shot regression to predict the next-30-day average, then walks the trajectory forward day by day using:
-- `expected_rate[t+1] = expected_rate[t] * (1 + momentum_t * 0.5)` damped by the LightGBM quantile envelope.
-- `p90_upper[t+1] = max(p90_upper[t] * 1.005, expected_rate[t+1] * 1.05)` (slow widening).
+The ML service walks the trajectory forward day by day. Each step rebuilds the causal lag, moving-average, volatility, momentum, seasonality, and market features, then calls the served point ensemble, P10 model, and P90 stack. The API re-anchors the relative trajectory to the requested current rate and applies the live radar multiplier.
 
 The Express server then re-anchors this trajectory to the *current* spot rate returned by its own `forecastRates()` engine, so the UI shows a rate curve that's continuous with the displayed today price.
 
 ### 10. Retrain
 Re-run `python ml/train.py` whenever the dataset or feature set changes. The bundle is saved to `ml/models/freight_forecasting_bundle.pkl` and a fast-readable metadata to `model_metadata.json`. The ML service hot-loads on restart.
+
+### 11. Accuracy and API tests
+Run the complete suite from the repository root with the project virtual environment:
+
+```powershell
+cd ml
+.\venv\Scripts\python.exe -m pytest testmodel.py -v
+```
+
+The suite checks chronological model accuracy gates, P10/P90 ordering and coverage, feature compatibility, and all FastAPI endpoint contracts. The latest verified run completed with **12 passed**.
 
 ---
 
@@ -394,7 +404,7 @@ PortCast/
 End-to-end tested manually via WebBridge browser automation + subagent vision passes across 22+ iteration cycles:
 
 - `5000:200 · 8000:200 · 5173:200` after `./start-all.sh`.
-- `curl /api/ml/health` returns `r2: 0.9943, ensemble: "LightGBM + XGBoost (mean)"`.
+- `curl /api/ml/health` returns the persisted model metrics, including the LightGBM + XGBoost ensemble and P90 stack metrics.
 - `curl /api/explain {routeId: R01}` returns top-5 driver contributions.
 - WebBridge screenshot of all 6 views confirms:
   - `glass-card opacity: 1` (no framer `whileInView` opacity-0 trap).
@@ -410,8 +420,8 @@ End-to-end tested manually via WebBridge browser automation + subagent vision pa
 
 | AGENTS.md § | Promise | Status |
 |---|---|---|
-| §2.1 — Hybrid Forecasting | LightGBM + XGBoost | ✅ both, hybrid ensemble R² 0.9943 |
-| §2.1 — Quantile P10/P90 | Yes | ✅ LightGBM quantile regressors |
+| §2.1 — Hybrid Forecasting | LightGBM + XGBoost | ✅ both, hybrid ensemble R² 0.9953 |
+| §2.1 — Quantile P10/P90 | Yes | ✅ LightGBM P10 + leakage-safe LightGBM/XGBoost P90 stack |
 | §2.1 — BDRY & macro lags | Yes | ✅ `rate_lag_1/2/3/5/7/14`, `oil_ma_7/14/30`, BDRY live |
 | §2.1 — SHAP / explainability | Yes | ✅ `/api/explain` + `<ExplainabilityPanel />` (SHAP-lite) |
 | §2.2 — Real-time news NLP | Yes | ✅ `news_radar.py` RSS gcaptain + splash247, severity score |
