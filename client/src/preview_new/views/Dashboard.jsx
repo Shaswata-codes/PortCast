@@ -383,7 +383,7 @@ export default function Dashboard() {
         </ScrollReveal>
 
         <ScrollReveal delay={0.2}>
-          <AnimatedCard accent>
+          <AnimatedCard>
             <h2 className="text-xl font-bold text-slate-900 mb-6 flex items-center gap-2"><span className="w-1 h-6 rounded-full bg-gradient-to-b from-rose-500 to-amber-500" /> Live Maritime Disruption Feed</h2>
             <div className="space-y-4 max-h-[500px] overflow-y-auto pr-2">
               {disruptionFeed.map((alert, idx) => (

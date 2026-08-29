@@ -80,6 +80,7 @@ def load_models():
         except Exception as e:
             print(f"[ml] Rate history unavailable: {e}")
 
+
 def _roll(hist, win, kind):
     seg = np.asarray(hist[-win:], dtype=float)
     if kind == "ma":

@@ -38,10 +38,10 @@ def fetch_yahoo_history(ticker: str, range_str: str = "5y", interval: str = "1d"
                     records.append({"date": dt, f"{ticker.lower()}_close": float(close)})
             
             df = pd.DataFrame(records).drop_duplicates(subset=["date"])
-            print(f"✅ Fetched {len(df)} daily records for {ticker}")
+            print(f"[OK] Fetched {len(df)} daily records for {ticker}")
             return df
     except Exception as e:
-        print(f"⚠️ Warning: Could not fetch {ticker} from Yahoo Finance: {e}")
+        print(f"[WARN] Could not fetch {ticker} from Yahoo Finance: {e}")
         return pd.DataFrame(columns=["date", f"{ticker.lower()}_close"])
 
 def build_composite_dataset():
@@ -131,7 +131,7 @@ def build_composite_dataset():
     # Save to disk
     output_path = os.path.join(ML_DATA_DIR, "processed_freight_master.csv")
     master.to_csv(output_path, index=False)
-    print(f"🎉 Master dataset generated successfully: {output_path} ({len(master)} rows, {len(master.columns)} features)")
+    print(f"[DONE] Master dataset generated successfully: {output_path} ({len(master)} rows, {len(master.columns)} features)")
     return output_path
 
 if __name__ == "__main__":
