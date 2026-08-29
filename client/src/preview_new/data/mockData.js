@@ -7,7 +7,7 @@ export const marketTickerData = [
   { label: 'VLSFO', value: '$612.50', change: '+2.1%', trend: 'up' },
   { label: 'MGO', value: '$784.20', change: '-0.5%', trend: 'down' },
   { label: 'Risk Index', value: '51.1/100', change: 'x1.102', trend: 'neutral' },
-  { label: 'System', value: 'LIVE', change: '99.98%', trend: 'up' },
+  { label: 'System', value: 'ONLINE', change: '99.98%', trend: 'up' },
 ]
 
 // KPI Metrics
@@ -180,20 +180,21 @@ export const riskScenarios = [
 
 // Signal badge colors
 export const signalColors = {
-  'LOCK NOW': 'bg-rose-500/20 text-rose-600 border-rose-500/30',
-  'BUY NOW': 'bg-emerald-500/20 text-emerald-600 border-emerald-500/30',
-  'WAIT': 'bg-amber-500/20 text-amber-600 border-amber-500/30',
+  'LOCK NOW': 'bg-rose-50 text-rose-700 border-rose-200',
+  'BUY NOW': 'bg-emerald-50 text-emerald-700 border-emerald-200',
+  'WAIT': 'bg-amber-50 text-amber-800 border-amber-200',
+  'HOLD': 'bg-sky-50 text-sky-700 border-sky-200',
 }
 
 export const urgencyColors = {
-  'HIGH': 'text-rose-600',
-  'MEDIUM': 'text-amber-600',
-  'LOW': 'text-emerald-600',
+  'HIGH': 'text-rose-700',
+  'MEDIUM': 'text-amber-700',
+  'LOW': 'text-emerald-700',
 }
 
 export const severityColors = {
-  'CRITICAL': 'bg-rose-500/20 text-rose-600 border-rose-500/30',
-  'HIGH': 'bg-orange-500/20 text-orange-400 border-orange-500/30',
-  'MEDIUM': 'bg-amber-500/20 text-amber-600 border-amber-500/30',
-  'LOW': 'bg-emerald-500/20 text-emerald-600 border-emerald-500/30',
+  'CRITICAL': 'bg-rose-50 text-rose-700 border-rose-200',
+  'HIGH': 'bg-amber-50 text-amber-800 border-amber-200',
+  'MEDIUM': 'bg-sky-50 text-sky-700 border-sky-200',
+  'LOW': 'bg-emerald-50 text-emerald-700 border-emerald-200',
 }

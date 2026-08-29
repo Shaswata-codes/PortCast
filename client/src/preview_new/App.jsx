@@ -4,6 +4,7 @@ import Navbar from './components/Navbar'
 import OceanBackground from './components/OceanBackground'
 import ErrorBoundary from './components/ErrorBoundary'
 import { setDeepLinkRouteId } from './services/routeStore'
+import { getStoredUser } from './services/api'
 
 const Home = React.lazy(() => import('./views/Home'))
 const Dashboard = React.lazy(() => import('./views/Dashboard'))
@@ -11,6 +12,7 @@ const FreightForecaster = React.lazy(() => import('./views/FreightForecaster'))
 const CharterOptimizer = React.lazy(() => import('./views/CharterOptimizer'))
 const PortRestrictions = React.lazy(() => import('./views/PortRestrictions'))
 const RiskRadar = React.lazy(() => import('./views/RiskRadar'))
+const Login = React.lazy(() => import('./views/Login'))
 
 const views = {
   home: Home,
@@ -19,6 +21,7 @@ const views = {
   optimizer: CharterOptimizer,
   ports: PortRestrictions,
   risk: RiskRadar,
+  login: Login,
 }
 
 export const VIEW_ORDER = Object.keys(views)
@@ -47,11 +50,9 @@ function BootScreen() {
           transition={{ duration: 0.4 }}
           className="flex items-center gap-3 justify-center"
         >
-          <svg className="w-7 h-7 text-sky-700" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
-            <path d="M12 3v18M5 10l7-7 7 7M3 21h18" strokeLinecap="round" strokeLinejoin="round" opacity="0" />
-            <circle cx="12" cy="12" r="9" />
-            <path d="M3 12h18M12 3c2.8 2.6 4.2 5.6 4.2 9s-1.4 6.4-4.2 9c-2.8-2.6-4.2-5.6-4.2-9S9.2 5.6 12 3z" />
-          </svg>
+          <div className="w-9 h-9 rounded-xl overflow-hidden border border-slate-200 shadow-sm bg-white">
+            <img src="/img/logo.jpg" alt="PortCast Logo" className="w-full h-full object-cover" />
+          </div>
           <span className="text-xl font-bold text-slate-900 tracking-tight">PortCast</span>
         </motion.div>
         <div className="mt-5 w-44 h-[2px] bg-slate-200 rounded-full overflow-hidden mx-auto">
@@ -62,7 +63,7 @@ function BootScreen() {
             className="h-full w-full bg-gradient-to-r from-sky-600 to-teal-500"
           />
         </div>
-        <p className="mt-4 text-xs text-slate-400 font-mono tracking-widest">MARITIME FREIGHT INTELLIGENCE</p>
+        <p className="mt-4 text-xs text-slate-500 font-mono tracking-widest font-medium">MARITIME FREIGHT INTELLIGENCE</p>
       </div>
     </div>
   )
@@ -70,6 +71,7 @@ function BootScreen() {
 
 export default function App() {
   const [activeView, setActiveView] = useState(() => parseHash() || 'home')
+  const [user, setUser] = useState(() => getStoredUser())
   const [isLoading, setIsLoading] = useState(true)
   const { scrollYProgress } = useScroll()
   const progress = useSpring(scrollYProgress, { stiffness: 120, damping: 25 })
@@ -110,7 +112,12 @@ export default function App() {
       <motion.div className="scroll-progress" style={{ scaleX: progress, transformOrigin: '0% 50%' }} />
       <div className="relative z-10">
         <header className="sticky top-0 z-40">
-          <Navbar activeView={activeView} onViewChange={setActiveView} />
+          <Navbar
+            activeView={activeView}
+            onViewChange={setActiveView}
+            user={user}
+            onLogout={() => setUser(null)}
+          />
         </header>
         <main key={activeView} className="view-enter">
           <ErrorBoundary key={activeView}>
@@ -121,7 +128,11 @@ export default function App() {
                 </div>
               }
             >
-              <ActiveComponent onNavigate={setActiveView} />
+              <ActiveComponent
+                onNavigate={setActiveView}
+                user={user}
+                onLoginSuccess={(u) => setUser(u)}
+              />
             </React.Suspense>
           </ErrorBoundary>
         </main>
@@ -130,7 +141,7 @@ export default function App() {
             <p className="text-xs text-slate-500">
               PortCast — Freight Forecasting & Charter Optimization for India's East Coast
             </p>
-            <p className="text-xs font-mono text-slate-400">SIH26006 · Transportation & Logistics</p>
+            <p className="text-xs font-mono text-slate-500 font-medium">SIH26006 · Transportation & Logistics</p>
           </div>
         </footer>
       </div>

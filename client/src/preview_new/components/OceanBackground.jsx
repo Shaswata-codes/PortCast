@@ -11,20 +11,17 @@ export default function OceanBackground() {
     if (!canvas) return
     const ctx = canvas.getContext('2d')
     let raf
+    let w, h
 
-    const dpr = Math.min(window.devicePixelRatio || 1, 2)
     const resize = () => {
-      canvas.width = window.innerWidth * dpr
-      canvas.height = window.innerHeight * dpr
-      canvas.style.width = `${window.innerWidth}px`
-      canvas.style.height = `${window.innerHeight}px`
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
+      w = canvas.width = window.innerWidth
+      h = canvas.height = window.innerHeight
     }
     resize()
     window.addEventListener('resize', resize)
 
-    const render = () => {
-      ctx.clearRect(0, 0, window.innerWidth, window.innerHeight)
+    const draw = () => {
+      ctx.clearRect(0, 0, w, h)
       const t = performance.now() / 1000
       const W = window.innerWidth
       const H = window.innerHeight
@@ -47,13 +44,13 @@ export default function OceanBackground() {
         ctx.lineWidth = 1
         ctx.stroke()
       }
-      raf = requestAnimationFrame(render)
+      raf = requestAnimationFrame(draw)
     }
-    raf = requestAnimationFrame(render)
+    draw()
 
     return () => {
-      cancelAnimationFrame(raf)
       window.removeEventListener('resize', resize)
+      cancelAnimationFrame(raf)
     }
   }, [])
 
@@ -108,7 +105,7 @@ export default function OceanBackground() {
         src="/keyframes/hero_voyage_clean.mp4"
       />
 
-      {/* Stronger frosted scrim */}
+      {/* Daylight scrim */}
       <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#f2f6fb]/[0.08] to-[#f2f6fb]/[0.18]" />
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(14,165,233,0.06),rgba(255,255,255,0))]" />
 

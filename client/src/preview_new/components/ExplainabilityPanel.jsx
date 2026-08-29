@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { Sparkles, TrendingUp, TrendingDown, Loader2 } from 'lucide-react'
+import { fetchExplanation } from '../services/api'
 
 const groupColors = {
   Momentum:    { bar: 'bg-sky-500',    chip: 'bg-sky-50 text-sky-700 border-sky-200' },
@@ -17,13 +18,12 @@ export default function ExplainabilityPanel({ routeId, baseRate }) {
     let alive = true
     setLoading(true)
     setErr(null)
-    fetch('/api/explain', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ routeId }),
-    })
-      .then((r) => r.ok ? r.json() : Promise.reject(new Error(`HTTP ${r.status}`)))
-      .then((d) => alive && setData(d))
+    fetchExplanation(routeId)
+      .then((d) => {
+        if (!alive) return
+        if (d) setData(d)
+        else setErr('Unable to compute feature explanation')
+      })
       .catch((e) => alive && setErr(e.message))
       .finally(() => alive && setLoading(false))
     return () => { alive = false }
@@ -48,7 +48,7 @@ export default function ExplainabilityPanel({ routeId, baseRate }) {
       <div className="flex items-center gap-2">
         <Sparkles className="w-4 h-4 text-sky-700" />
         <h3 className="text-sm font-bold text-slate-900">Why this forecast?</h3>
-        <span className="text-[10px] font-mono text-slate-400 ml-auto uppercase tracking-wider">SHAP-lite · LightGBM gain</span>
+        <span className="text-[10px] font-mono text-slate-500 ml-auto uppercase tracking-wider font-medium">SHAP-lite · LightGBM gain</span>
       </div>
 
       <div className="space-y-2.5">

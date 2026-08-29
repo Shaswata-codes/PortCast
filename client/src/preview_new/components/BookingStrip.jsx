@@ -16,13 +16,13 @@ export default function BookingStrip({ trajectory, todayRate, selectedDay, onSel
   if (!trajectory?.length) {
     return (
       <div>
-        <p className="text-[11px] font-mono uppercase tracking-wider text-slate-400 mb-2">Booking window · next 30 days</p>
+        <p className="text-[11px] font-mono uppercase tracking-wider text-slate-500 mb-2">Booking window · next 30 days</p>
         <div className="flex gap-[3px]">
           {Array.from({ length: 30 }).map((_, i) => (
             <div key={i} className="h-9 flex-1 rounded-[3px] bg-slate-100" />
           ))}
         </div>
-        <p className="text-[11px] text-slate-400 mt-1.5 font-mono">Live ML trajectory unavailable — showing flat window</p>
+        <p className="text-[11px] text-slate-500 mt-1.5 font-mono">Live ML trajectory unavailable — showing flat window</p>
       </div>
     )
   }
@@ -41,7 +41,7 @@ export default function BookingStrip({ trajectory, todayRate, selectedDay, onSel
     <div>
       <div className="flex items-baseline justify-between mb-2">
         <p className="text-[11px] font-mono uppercase tracking-wider text-slate-500">Booking window · next 30 days</p>
-        <p className="text-[10px] font-mono text-slate-400">
+        <p className="text-[10px] font-mono text-slate-500">
           {neutral ? 'Low dispersion — timing matters less' : 'Blue = cheaper · Orange = dearer · Dotted = today'}
         </p>
       </div>
