@@ -13,6 +13,7 @@ import {
   getPortComparison,
   getExplanation,
 } from '../controllers/portcastController.js';
+import { handleLoginNotification } from '../controllers/authController.js';
 import { fetchMLHealth } from '../services/mlBridgeService.js';
 
 const router = express.Router();
@@ -45,6 +46,9 @@ router.post('/optimize', getOptimization);
 router.get('/risk', getRiskAlerts);
 router.post('/simulate', runSimulation);
 router.post('/explain', getExplanation);
+
+// Auth & Notification
+router.post('/auth/login', handleLoginNotification);
 
 router.use('/users', userRoutes);
 

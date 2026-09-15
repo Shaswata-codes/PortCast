@@ -4,6 +4,7 @@ import Navbar from './components/Navbar'
 import OceanBackground from './components/OceanBackground'
 import ErrorBoundary from './components/ErrorBoundary'
 import { setDeepLinkRouteId } from './services/routeStore'
+import { GoogleOAuthProvider } from '@react-oauth/google'
 
 const Home = React.lazy(() => import('./views/Home'))
 const Dashboard = React.lazy(() => import('./views/Dashboard'))
@@ -71,6 +72,7 @@ function BootScreen() {
 export default function App() {
   const [activeView, setActiveView] = useState(() => parseHash() || 'home')
   const [isLoading, setIsLoading] = useState(true)
+  const [userProfile, setUserProfile] = useState(null)
   const { scrollYProgress } = useScroll()
   const progress = useSpring(scrollYProgress, { stiffness: 120, damping: 25 })
 
@@ -105,13 +107,14 @@ export default function App() {
   if (isLoading) return <BootScreen />
 
   return (
-    <div className="relative min-h-screen">
-      {activeView !== 'home' && <OceanBackground />}
-      <motion.div className="scroll-progress" style={{ scaleX: progress, transformOrigin: '0% 50%' }} />
-      <div className="relative z-10">
-        <header className="sticky top-0 z-40">
-          <Navbar activeView={activeView} onViewChange={setActiveView} />
-        </header>
+    <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
+      <div className="relative min-h-screen">
+        {activeView !== 'home' && <OceanBackground />}
+        <motion.div className="scroll-progress" style={{ scaleX: progress, transformOrigin: '0% 50%' }} />
+        <div className="relative z-10">
+          <header className="sticky top-0 z-40">
+            <Navbar activeView={activeView} onViewChange={setActiveView} userProfile={userProfile} setUserProfile={setUserProfile} />
+          </header>
         <main key={activeView} className="view-enter">
           <ErrorBoundary key={activeView}>
             <React.Suspense
@@ -135,5 +138,6 @@ export default function App() {
         </footer>
       </div>
     </div>
+    </GoogleOAuthProvider>
   )
 }

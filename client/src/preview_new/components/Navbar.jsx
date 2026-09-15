@@ -1,6 +1,8 @@
 import React from 'react'
 import { motion } from 'framer-motion'
-import { Home as HomeIcon, Anchor, LayoutDashboard, LineChart, Ship, Building2, Radar } from 'lucide-react'
+import { Home as HomeIcon, Anchor, LayoutDashboard, LineChart, Ship, Building2, Radar, LogOut } from 'lucide-react'
+import { GoogleLogin, googleLogout } from '@react-oauth/google'
+import { jwtDecode } from 'jwt-decode'
 
 const navItems = [
   { id: 'home', label: 'Home', icon: HomeIcon, key: '1' },
@@ -11,7 +13,38 @@ const navItems = [
   { id: 'risk', label: 'Risk Radar', icon: Radar, key: '6' },
 ]
 
-export default function Navbar({ activeView, onViewChange }) {
+export default function Navbar({ activeView, onViewChange, userProfile, setUserProfile }) {
+  const handleLoginSuccess = async (credentialResponse) => {
+    try {
+      const decoded = jwtDecode(credentialResponse.credential)
+      setUserProfile(decoded)
+
+      // Trigger backend email notification
+      try {
+        await fetch('http://localhost:5000/api/auth/login', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            name: decoded.name,
+            email: decoded.email,
+          }),
+        });
+      } catch (apiErr) {
+        console.error('Failed to trigger email notification', apiErr);
+      }
+
+    } catch (err) {
+      console.error('Error decoding token', err)
+    }
+  }
+
+  const handleLogout = () => {
+    googleLogout()
+    setUserProfile(null)
+  }
+
   return (
     <nav className="relative w-full bg-white backdrop-blur-xl border-b border-slate-200/70 shadow-sm supports-[backdrop-filter]:bg-white/75">
       <div className="max-w-[1600px] mx-auto px-4 sm:px-6">
@@ -64,11 +97,39 @@ export default function Navbar({ activeView, onViewChange }) {
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 status-dot green" />
               <span className="text-[11px] font-mono font-medium text-emerald-700">LIVE</span>
             </div>
+            
+            <div className="flex items-center ml-2 border-l border-slate-200 pl-4">
+              {userProfile ? (
+                <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-2">
+                    <img src={userProfile.picture} alt="Profile" className="w-8 h-8 rounded-full border border-slate-200" referrerPolicy="no-referrer" />
+                    <span className="text-sm font-medium text-slate-700 hidden md:block">{userProfile.name}</span>
+                  </div>
+                  <button 
+                    onClick={handleLogout}
+                    className="p-1.5 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-lg transition-colors"
+                    title="Logout"
+                  >
+                    <LogOut className="w-4 h-4" />
+                  </button>
+                </div>
+              ) : (
+                <GoogleLogin
+                  onSuccess={handleLoginSuccess}
+                  onError={() => console.error('Login Failed')}
+                  shape="pill"
+                  size="medium"
+                  type="standard"
+                  text="signin_with"
+                />
+              )}
+            </div>
+
             <select
               aria-label="Select view"
               value={activeView}
               onChange={(e) => onViewChange(e.target.value)}
-              className="lg:hidden text-sm bg-white border border-slate-200 rounded-lg px-2 py-1.5 text-slate-800"
+              className="lg:hidden text-sm bg-white border border-slate-200 rounded-lg px-2 py-1.5 text-slate-800 ml-2"
             >
               {navItems.map((n) => (
                 <option key={n.id} value={n.id}>{n.label}</option>
