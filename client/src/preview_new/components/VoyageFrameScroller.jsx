@@ -245,7 +245,7 @@ export default function VoyageFrameScroller() {
 
           {/* Bottom Interactive Prompt */}
           <div className="flex items-center justify-between border-t border-slate-800/80 pt-4 pointer-events-auto">
-            <div className="flex items-center gap-2 text-xs font-mono text-slate-400">
+            <div className="flex items-center gap-2 text-xs font-mono text-slate-300">
               <Ship className="w-4 h-4 text-sky-400" />
               <span>Scroll down to scrub voyage frames</span>
             </div>

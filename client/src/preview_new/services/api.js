@@ -6,6 +6,27 @@ const http = axios.create({
   timeout: 12000,
 })
 
+// Attach stored JWT token if available
+http.interceptors.request.use((config) => {
+  const token = localStorage.getItem('token')
+  if (token) {
+    config.headers = config.headers || {}
+    config.headers.Authorization = `Bearer ${token}`
+  }
+  return config
+})
+
+// Auto-handle 401 token expiration
+http.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response && error.response.status === 401 && error.config.url?.includes('/users/profile')) {
+      logoutUser()
+    }
+    return Promise.reject(error)
+  }
+)
+
 const cache = new Map()
 const CACHE_TTL = 60_000
 const lastErrors = new Map()
@@ -49,6 +70,44 @@ async function post(url, body, errKey) {
   }
 }
 
+// User Auth APIs
+export async function loginUser(email, password) {
+  const { data } = await http.post('/users/login', { email, password })
+  if (data?.token) {
+    localStorage.setItem('token', data.token)
+    localStorage.setItem('user', JSON.stringify(data))
+  }
+  return data
+}
+
+export async function registerUser(name, email, password, role) {
+  const { data } = await http.post('/users/register', { name, email, password, role })
+  if (data?.token) {
+    localStorage.setItem('token', data.token)
+    localStorage.setItem('user', JSON.stringify(data))
+  }
+  return data
+}
+
+export async function fetchUserProfile() {
+  const { data } = await http.get('/users/profile')
+  return data
+}
+
+export function logoutUser() {
+  localStorage.removeItem('token')
+  localStorage.removeItem('user')
+}
+
+export function getStoredUser() {
+  try {
+    const u = localStorage.getItem('user')
+    return u ? JSON.parse(u) : null
+  } catch {
+    return null
+  }
+}
+
 export const fetchDashboard = () => cachedGet('dashboard', '/dashboard')
 export const fetchPorts = () => cachedGet('ports', '/ports')
 export const fetchRoutes = () => cachedGet('routes', '/routes')
@@ -65,6 +124,9 @@ export const fetchPortComparison = ({ origin, parcel, bunker }) => {
 
 export const fetchSimulate = (routeId, scenario) =>
   post('/simulate', { routeId, scenario }, 'simulate')
+
+export const fetchExplanation = (routeId) =>
+  post('/explain', { routeId }, 'explain')
 
 export function timeAgo(iso) {
   if (!iso) return ''

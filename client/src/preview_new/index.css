@@ -39,7 +39,7 @@
   --pc-emerald: #059669;
   --pc-amber: #d97706;
   --pc-rose: #e11d48;
-  --pc-violet: #7c3aed;
+  --pc-cyan: #06b6d4;
 
   /* Elevation — layered depth system */
   --pc-shadow-sm: 0 1px 2px rgba(11, 31, 58, 0.05), 0 1px 3px rgba(11, 31, 58, 0.04);
@@ -145,39 +145,28 @@ body {
   inset: 0;
   border-radius: inherit;
   padding: 1px;
-  background: linear-gradient(90deg, transparent, rgba(2,132,199,0.4), transparent);
-  background-size: 200% 100%;
-  animation: shimmerSlide 3s linear infinite;
+  background: linear-gradient(135deg, rgba(2, 132, 199, 0.25), transparent 45%, rgba(13, 148, 136, 0.15));
   -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
   -webkit-mask-composite: xor;
   mask-composite: exclude;
   pointer-events: none;
-  opacity: 0.38;
-  transition: opacity 0.4s ease;
+  opacity: 0.6;
+  transition: opacity 0.3s ease;
 }
 .shimmer-border:hover::after { opacity: 1; }
-@keyframes shimmerSlide {
-  0% { background-position: -200% 0; }
-  100% { background-position: 200% 0; }
-}
 
 .border-beam {
   position: absolute;
   inset: 0;
   border-radius: inherit;
-  padding: 1.5px;
-  background: conic-gradient(from var(--beam-angle, 0deg), transparent 45%, var(--pc-sky) 68%, var(--pc-teal) 78%, transparent 92%);
+  padding: 1px;
+  background: linear-gradient(135deg, rgba(2, 132, 199, 0.4) 0%, rgba(13, 148, 136, 0.25) 50%, transparent 100%);
   -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
   -webkit-mask-composite: xor;
   mask-composite: exclude;
   pointer-events: none;
-  opacity: 0.88;
-  animation: beamRotate 4s linear infinite;
+  opacity: 0.8;
 }
-@keyframes beamRotate {
-  to { --beam-angle: 360deg; }
-}
-@property --beam-angle { syntax: '<angle>'; initial-value: 0deg; inherits: false; }
 
 .neon-border { position: relative; }
 

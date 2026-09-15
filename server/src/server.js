@@ -1,13 +1,13 @@
 import dotenv from 'dotenv';
 import app from './app.js';
+import connectDB from './config/db.js';
 
 dotenv.config();
 
 const PORT = process.env.PORT || 5000;
 
-// Skip MongoDB — PortCast analytics engine runs entirely in-memory
-// MongoDB can be enabled later for user accounts, saved analyses, etc.
-console.log('ℹ️  Running in analytics-only mode (no MongoDB required)');
+// Connect to MongoDB if configured
+connectDB();
 
 app.listen(PORT, () => {
   console.log(`🚢 PortCast server running in ${process.env.NODE_ENV || 'development'} mode on port ${PORT}`);

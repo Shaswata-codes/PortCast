@@ -27,7 +27,7 @@ const SEVERITY_STYLE = {
   MODERATE: '#0369a1',
   MEDIUM: '#0369a1',
   LOW: '#059669',
-  UNKNOWN: '#94a3b8',
+  UNKNOWN: '#64748b',
 }
 
 function project([lng, lat]) {
@@ -90,7 +90,7 @@ export default function RouteMap({ route, origins = [], destinations = [], radar
 
   if (!geo) {
     return (
-      <div className="h-full min-h-[260px] flex items-center justify-center text-xs font-mono text-slate-400">
+      <div className="h-full min-h-[260px] flex items-center justify-center text-xs font-mono text-slate-500">
         Loading trade lane geography...
       </div>
     )
@@ -157,7 +157,7 @@ export default function RouteMap({ route, origins = [], destinations = [], radar
             {s}
           </span>
         ))}
-        <span className="ml-auto text-[10px] font-mono text-slate-400">
+        <span className="ml-auto text-[10px] font-mono text-slate-500 font-medium">
           Great-circle approximation{radarAge ? ` · radar ${radarAge}` : ''}
         </span>
       </div>
