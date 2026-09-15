@@ -4,11 +4,8 @@ import Navbar from './components/Navbar'
 import OceanBackground from './components/OceanBackground'
 import ErrorBoundary from './components/ErrorBoundary'
 import { setDeepLinkRouteId } from './services/routeStore'
-<<<<<<< HEAD
 import { GoogleOAuthProvider } from '@react-oauth/google'
-=======
 import { getStoredUser } from './services/api'
->>>>>>> 3e19b51c12f19f8100587f622d119ec7442a1c56
 
 const Home = React.lazy(() => import('./views/Home'))
 const Dashboard = React.lazy(() => import('./views/Dashboard'))
@@ -112,29 +109,21 @@ export default function App() {
   if (isLoading) return <BootScreen />
 
   return (
-<<<<<<< HEAD
     <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
       <div className="relative min-h-screen">
         {activeView !== 'home' && <OceanBackground />}
         <motion.div className="scroll-progress" style={{ scaleX: progress, transformOrigin: '0% 50%' }} />
         <div className="relative z-10">
           <header className="sticky top-0 z-40">
-            <Navbar activeView={activeView} onViewChange={setActiveView} userProfile={userProfile} setUserProfile={setUserProfile} />
+            <Navbar 
+              activeView={activeView} 
+              onViewChange={setActiveView} 
+              userProfile={userProfile} 
+              setUserProfile={setUserProfile} 
+              user={user}
+              onLogout={() => setUser(null)}
+            />
           </header>
-=======
-    <div className="relative min-h-screen">
-      {activeView !== 'home' && <OceanBackground />}
-      <motion.div className="scroll-progress" style={{ scaleX: progress, transformOrigin: '0% 50%' }} />
-      <div className="relative z-10">
-        <header className="sticky top-0 z-40">
-          <Navbar
-            activeView={activeView}
-            onViewChange={setActiveView}
-            user={user}
-            onLogout={() => setUser(null)}
-          />
-        </header>
->>>>>>> 3e19b51c12f19f8100587f622d119ec7442a1c56
         <main key={activeView} className="view-enter">
           <ErrorBoundary key={activeView}>
             <React.Suspense
