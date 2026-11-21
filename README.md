@@ -38,8 +38,8 @@ Built around a **hybrid LightGBM + XGBoost ensemble** trained on Baltic indices,
   <img src="docs/screenshots/01_dashboard_overview.jpg" alt="PortCast Operations Overview" width="95%" />
 </p>
 
-### 2. Freight Forecaster — Live ML Intelligence & Quantiles
-*Ensemble rate forecast with P10/P90 statistical bounds, spot pricing, and optimal booking day detection.*
+### 2. Freight Forecaster — Live ML Intelligence, Quantiles & Booking Heat Strip
+*Ensemble rate forecast with P10/P90 statistical bounds, spot pricing, optimal booking day detection, and 30-day forward booking heat strip.*
 <p align="center">
   <img src="docs/screenshots/02_forecaster_quantiles.jpg" alt="Freight Forecaster ML Intelligence" width="95%" />
 </p>
