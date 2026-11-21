@@ -11,19 +11,52 @@ Built around a **hybrid LightGBM + XGBoost ensemble** trained on Baltic indices,
 
 ## Table of Contents
 
-1. [Features](#features)
-2. [Quick start](#quick-start)
-3. [Architecture](#architecture)
-4. [How the ML is trained](#how-the-ml-is-trained)
-5. [The 6 product views](#the-6-product-views)
-6. [How the API works](#how-the-api-works)
-7. [How the optimizer works](#how-the-optimizer-works)
-8. [Data sources](#data-sources)
-9. [Project layout](#project-layout)
-10. [Environment variables](#environment-variables)
-11. [Tested behaviour](#tested-behaviour)
-12. [SIH 2026 alignment](#sih-2026-alignment)
-13. [Credits](#credits)
+1. [Platform Screenshots](#platform-screenshots)
+2. [Features](#features)
+3. [Quick start](#quick-start)
+4. [Architecture](#architecture)
+5. [How the ML is trained](#how-the-ml-is-trained)
+6. [The 6 product views](#the-6-product-views)
+7. [How the API works](#how-the-api-works)
+8. [How the optimizer works](#how-the-optimizer-works)
+9. [Data sources](#data-sources)
+10. [Project layout](#project-layout)
+11. [Environment variables](#environment-variables)
+12. [Tested behaviour](#tested-behaviour)
+13. [SIH 2026 alignment](#sih-2026-alignment)
+14. [Credits](#credits)
+
+---
+
+## Platform Screenshots
+
+<div align="center">
+
+### 1. Operations Overview & Disruption Feed
+*Real-time East Coast port wait times alongside NLP-scored geopolitical news feed.*
+<p align="center">
+  <img src="docs/screenshots/01_dashboard_overview.jpg" alt="PortCast Operations Overview" width="95%" />
+</p>
+
+### 2. Freight Forecaster — Live ML Intelligence & Quantiles
+*Ensemble rate forecast with P10/P90 statistical bounds, spot pricing, and optimal booking day detection.*
+<p align="center">
+  <img src="docs/screenshots/02_forecaster_quantiles.jpg" alt="Freight Forecaster ML Intelligence" width="95%" />
+</p>
+
+### 3. Multi-Horizon Trajectory & What-If Stress Simulator
+*180-day historical + 30-day forward trajectory with confidence intervals, bunker fuel shock slider, and SHAP-lite drivers.*
+<p align="center">
+  <img src="docs/screenshots/03_forecaster_trajectory_whatif.jpg" alt="Trajectory and What-If Simulator" width="95%" />
+</p>
+
+### 4. Charter Optimizer & Physical Port Draft Feasibility
+*Vessel selection engine checking physical draft constraints (e.g., Haldia 8.5m & Sandheads) and calculating net savings.*
+<p align="center">
+  <img src="docs/screenshots/04_charter_optimizer.jpg" alt="Charter Optimizer & Vessel Feasibility" width="95%" />
+</p>
+
+</div>
 
 ---
 
@@ -234,12 +267,15 @@ Hero: WCAG-compliant text shadow (white halo 18 px) on the h1 so dark text reads
 HUD pill row: AIS vessel name, lat/lon, voyage progress. Value metrics strip (3 KPI tiles with `kpi-value-gradient`).
 
 ### Dashboard (`#overview`)
+![Dashboard Overview](docs/screenshots/01_dashboard_overview.jpg)
 - 4 KPI cards (Routes, Avg Spot, 30-Day Momentum, Active Risk Alerts) with sparklines + semantic trend pills.
 - `Active Risk Alerts` pill now uses a **LOW / MED / HIGH scale** (`0 → clear`, `1-4 → N LOW`, `5-7 → N MED`, `8+ → N HIGH`).
 - Image marquee (caption-aware edge fade, 8 slides).
 - Route projections table + East Coast Port Status horizontal bar chart.
 
 ### Freight Forecaster (`#forecaster`)
+![Freight Forecaster ML Quantiles](docs/screenshots/02_forecaster_quantiles.jpg)
+![Freight Forecaster Trajectory & What-If Simulator](docs/screenshots/03_forecaster_trajectory_whatif.jpg)
 - **Route selector** with 4 commodity-tagged route chips + live ML intelligence grid (MAPE / RMSE / R² / Directional Accuracy / Model Type / Confidence).
 - **What-If Scenario** card (3 sliders × shock-state colors).
 - **Multi-Horizon Rate Trajectory** Area chart (180-day historical + 30-day forecast) with P10/P90 confidence bands + monsoon `ReferenceArea`.
@@ -248,6 +284,7 @@ HUD pill row: AIS vessel name, lat/lon, voyage progress. Value metrics strip (3 
 - **Why this forecast?** panel (SHAP-lite, 5 drivers) on the right of the table.
 
 ### Charter Optimizer (`#optimizer`)
+![Charter Optimizer](docs/screenshots/04_charter_optimizer.jpg)
 - Inputs: shipping route, bunker fuel price, voyage parameters.
 - 4 vessel class cards (Handysize / Supramax / Panamax / Capesize) with:
   - **Voyage waterfall strip** (Hire / Bunker / Port / Lighterage) above pie.
